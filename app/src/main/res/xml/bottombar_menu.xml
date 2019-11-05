@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_petiyaak"
+        title="@string/main_tab_1"
+        icon="@mipmap/ic_launcher"
+        barColorWhenSelected="#FE3D81"
+        />
+    <tab
+        id="@+id/tab_shared"
+        title="@string/main_tab_2"
+        icon="@mipmap/ic_launcher"
+        barColorWhenSelected="#5D3C35"
+        />
+    <tab
+        id="@+id/tab_history"
+        title="@string/main_tab_3"
+        icon="@mipmap/ic_launcher"
+        barColorWhenSelected="#7B1FA2"
+        />
+    <tab
+        id="@+id/tab_setting"
+        title="@string/main_tab_4"
+        icon="@mipmap/ic_launcher"
+        barColorWhenSelected="#FF5252"
+        />
+</tabs>

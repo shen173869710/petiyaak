@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">petiyaak</string>
+
+
+    <string name="login_submit">Login</string>
+
+    <string name="main_tab_1">Petiyaak lock</string>
+    <string name="main_tab_2">Shared</string>
+    <string name="main_tab_3">History</string>
+    <string name="main_tab_4">Setting</string>
+
+
+    <string name="setting_item_1">Personal</string>
+    <string name="setting_item_2">Change Password</string>
+    <string name="setting_item_3">Notification</string>
+    <string name="setting_item_4">Notification</string>
+    <string name="setting_item_5">Show Battrty Percentage</string>
+    <string name="setting_item_6">Others</string>
+    <string name="setting_item_7">Tutorial</string>
+    <string name="setting_item_8">Lock Repair</string>
+    <string name="setting_item_9">Send Feedback to us</string>
+    <string name="setting_item_10">Language</string>
+    <string name="setting_item_11">About Us</string>
 </resources>

@@ -1,0 +1,36 @@
+<resources>
+    <dimen name="main_title_height">80dp</dimen>
+
+    <dimen name="main_padding">15dp</dimen>
+
+    <dimen name="main_login_btn_width">120dp</dimen>
+    <dimen name="main_login_btn_height">60dp</dimen>
+    <dimen name="size_6">6sp</dimen>
+    <dimen name="size_8">8sp</dimen>
+    <dimen name="size_9">9sp</dimen>
+    <dimen name="size_10">10sp</dimen>
+    <dimen name="size_11">11sp</dimen>
+    <dimen name="size_12">12sp</dimen>
+    <dimen name="size_14">14sp</dimen>
+    <dimen name="size_17">17sp</dimen>
+    <dimen name="size_16">16sp</dimen>
+    <dimen name="size_18">18sp</dimen>
+    <dimen name="size_20">20sp</dimen>
+    <dimen name="size_21">21sp</dimen>
+    <dimen name="size_22">22sp</dimen>
+    <dimen name="size_24">24sp</dimen>
+    <dimen name="size_26">26sp</dimen>
+    <dimen name="size_28">28sp</dimen>
+    <dimen name="size_30">30sp</dimen>
+    <dimen name="take_order_padding">30dp</dimen>
+
+    <dimen name="handover_magin_2">92dp</dimen>
+    <dimen name="handover_magin_3">355dp</dimen>
+    <dimen name="handover_magin_4">447dp</dimen>
+    <dimen name="handover_magin_top">8dp</dimen>
+    <dimen name="handover_padding">30dp</dimen>
+
+
+    <dimen name="setting_tab_height">60dp</dimen>
+
+</resources>

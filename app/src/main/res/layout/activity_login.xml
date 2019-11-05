@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:padding="50dp"
+        android:gravity="center_horizontal"
+        >
+        <com.petiyaak.box.customview.MClearEditText
+            android:id="@+id/mClearEditText"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:drawableLeft="@mipmap/icon_user"
+            android:drawablePadding="6dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:hint="Email Address"
+            android:textSize="14sp"
+            />
+
+        <com.petiyaak.box.customview.MClearEditText
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:drawableLeft="@mipmap/icon_password"
+            android:drawablePadding="6dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:textSize="14sp"
+            app:mClearEditText_bottomLineColor="@color/colorAccent"
+            app:mClearEditText_bottomLineWidth="1dp"
+            app:mClearEditText_disableClear="false"
+            app:mClearEditText_rightDrawableSize="20dp"
+            />
+
+        <TextView
+            android:id="@+id/login_submit"
+            android:layout_width="@dimen/main_login_btn_width"
+            android:layout_height="@dimen/main_login_btn_height"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/login_button_sel"
+            android:drawableLeft="@mipmap/icon_lock"
+            android:text="@string/login_submit"
+            android:textSize="@dimen/size_20"
+            android:gravity="center"
+            android:textColor="@color/white" />
+
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:text="Create a new account Sign up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_20"
+            android:gravity="center"
+            android:textColor="@color/black"
+            ></TextView>
+    </LinearLayout>
+
+</RelativeLayout>
