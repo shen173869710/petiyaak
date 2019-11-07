@@ -8,7 +8,7 @@
     <string name="main_tab_2">Shared</string>
     <string name="main_tab_3">History</string>
     <string name="main_tab_4">Setting</string>
-
+    <string name="empty">empty</string>
 
     <string name="setting_item_1">Personal</string>
     <string name="setting_item_2">Change Password</string>
@@ -21,4 +21,9 @@
     <string name="setting_item_9">Send Feedback to us</string>
     <string name="setting_item_10">Language</string>
     <string name="setting_item_11">About Us</string>
+
+
+
+    <string name="petiyaal_add">Add User</string>
+    <string name="petiyaal_title">My Petiyaak Box</string>
 </resources>

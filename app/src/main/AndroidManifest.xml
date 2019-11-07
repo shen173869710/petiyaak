@@ -19,6 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:screenOrientation="landscape"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.activity.LoginActivity">
             <intent-filter>
@@ -28,7 +29,11 @@
         </activity>
 
 
-        <activity android:name=".ui.activity.MainActivity"  android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.activity.MainActivity"  android:launchMode="singleTask"/>
+        <activity android:name=".ui.activity.PetiyaakInfoActivity"  />
+        <activity android:name=".ui.activity.BindFingerActivity"  />
+        <activity android:name=".ui.activity.BindPetiyaakActivity"  />
+        <activity android:name=".ui.activity.UserInfoActivity"  />
     </application>
 
 </manifest>
