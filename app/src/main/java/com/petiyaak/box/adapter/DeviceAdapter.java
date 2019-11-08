@@ -39,7 +39,6 @@ public class DeviceAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
         LinearLayout layout_idle = helper.getView(R.id.layout_idle);
         Button btn_disconnect = helper.getView(R.id.btn_disconnect);
 
-
         txt_name.setText(name);
         txt_mac.setText(mac);
         if (isConnected) {

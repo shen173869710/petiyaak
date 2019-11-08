@@ -33,9 +33,12 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.DeviceAdapter;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.constant.ConstantEntiy;
+import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.util.ToastUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -66,6 +69,8 @@ public class BindPetiyaakActivity extends BaseActivity {
     private List<BleDevice> data = new ArrayList<>();
     private DeviceAdapter mDeviceAdapter;
 
+    private PetiyaakBoxInfo info;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_bind_petiyaak;
@@ -74,6 +79,7 @@ public class BindPetiyaakActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
         mainTitleBack.setVisibility(View.VISIBLE);
         mainTitleTitle.setText("Bind Petiyaak box");
         mainTitleRight.setVisibility(View.VISIBLE);
@@ -260,6 +266,9 @@ public class BindPetiyaakActivity extends BaseActivity {
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 dismissDialog();
+                info.setItemBlueName(bleDevice.getName()+"");
+                info.setItemBlueStatus(true);
+                EventBus.getDefault().post(info);
                 mDeviceAdapter.addDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
             }
@@ -267,6 +276,9 @@ public class BindPetiyaakActivity extends BaseActivity {
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 dismissDialog();
+                info.setItemBlueName("");
+                info.setItemBlueStatus(false);
+                EventBus.getDefault().post(info);
                 mDeviceAdapter.removeDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
 

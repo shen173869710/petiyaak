@@ -2,10 +2,12 @@ package com.petiyaak.box.model.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
+import java.io.Serializable;
+
 /**
  * Created by chenzhaolin on 2019/11/6.
  */
-public class PetiyaakBoxInfo implements MultiItemEntity {
+public class PetiyaakBoxInfo implements MultiItemEntity, Serializable {
 
     private String itemUserName;
     private String itemBlueName;

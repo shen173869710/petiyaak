@@ -68,13 +68,14 @@
                 android:paddingTop="5dp">
 
                 <TextView
+                    android:id="@+id/petiyaak_info_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="name box"
                     android:textColor="@color/button_yellow"
                     android:textSize="@dimen/size_14"></TextView>
 
                 <TextView
+                    android:id="@+id/petiyaak_info_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="connect"
@@ -84,7 +85,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="battery"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="@dimen/size_14"></TextView>
             </LinearLayout>
