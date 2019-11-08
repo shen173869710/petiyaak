@@ -1,6 +1,7 @@
 package com.petiyaak.box.ui.fragment;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.PetiyaakListAdapter;
 import com.petiyaak.box.base.BaseFragment;
-import com.petiyaak.box.customview.DialogContent;
-import com.petiyaak.box.customview.InputDialog;
 import com.petiyaak.box.customview.OnDialogClick;
-import com.petiyaak.box.customview.OptionDialog;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.ui.activity.PetiyaakInfoActivity;
@@ -64,6 +62,7 @@ public class PetiyaakFragment extends BaseFragment {
         TextView title = view.findViewById(R.id.main_title_title);
         title.setText(R.string.main_tab_1);
         petiyaakList.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
+        petiyaakList.addItemDecoration(new SpacesItemDecoration(40));
         infos.add(new PetiyaakBoxInfo(0));
         mAdapter = new PetiyaakListAdapter(infos);
         petiyaakList.setAdapter(mAdapter);
@@ -80,13 +79,11 @@ public class PetiyaakFragment extends BaseFragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 if (position == 0) {
-
-
                     DialogUtil.addPetiyaak(mContext,new OnDialogClick() {
                         @Override
                         public void onDialogOkClick(String value) {
                             PetiyaakBoxInfo info = new PetiyaakBoxInfo(1);
-                            info.setItemName(value);
+                            info.setItemUserName(value);
                             infos.add(info);
                             mAdapter.notifyDataSetChanged();
                         }
@@ -136,5 +133,20 @@ public class PetiyaakFragment extends BaseFragment {
         unbinder.unbind();
     }
 
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+
+            // Add top margin only for the first item to avoid double space between items
+
+            outRect.top = space;
+        }
+    }
 
 }

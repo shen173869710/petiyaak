@@ -1,5 +1,7 @@
 package com.petiyaak.box.adapter;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
@@ -30,7 +32,14 @@ public class PetiyaakListAdapter extends BaseMultiItemQuickAdapter<PetiyaakBoxIn
             case 0:
                 break;
             case 1:
-                helper.setText(R.id.petiyaak_item_name,item.getItemName());
+                helper.setText(R.id.petiyaak_item_name,item.getItemUserName());
+                if (item.isItemBlueStatus()) {
+                    helper.getView(R.id.petiyaak_blue_layout).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.petiyaak_blue_name, item.getItemBlueName());
+                    helper.getView(R.id.petiyaak_blue_status).setBackgroundResource(R.mipmap.ic_blue_remote);
+                }else {
+                    helper.getView(R.id.petiyaak_blue_layout).setVisibility(View.INVISIBLE);
+                }
                 break;
 
         }

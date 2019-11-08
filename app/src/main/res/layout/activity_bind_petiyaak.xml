@@ -9,9 +9,10 @@
         android:id="@+id/main_title_bar"
         layout="@layout/main_title_bar"></include>
 
-
-
-
-
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bluelist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:scrollbars="none"></androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

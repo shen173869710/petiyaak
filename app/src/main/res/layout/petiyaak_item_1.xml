@@ -7,39 +7,37 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@mipmap/ic_default"></ImageView>
 
-
     <TextView
+        android:id="@+id/petiyaak_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name"
         android:textColor="@color/black"
         android:textSize="@dimen/size_16"></TextView>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/petiyaak_blue_layout"
         android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        android:orientation="horizontal">
-
+        android:layout_height="20dp"
+        android:paddingLeft="20dp"
+        >
         <ImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_gravity="center_vertical"
-            android:background="@mipmap/icon_set_info"></ImageView>
-
+            android:id="@+id/petiyaak_blue_status"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            />
         <TextView
-            android:id="@+id/petiyaak_item_name"
+            android:id="@+id/petiyaak_blue_name"
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
-            android:gravity="center"
-            android:text="name"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/petiyaak_blue_status"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
             android:textColor="@color/black"
             android:textSize="@dimen/size_14"></TextView>
-    </LinearLayout>
-
+    </RelativeLayout>
 </LinearLayout>

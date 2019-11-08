@@ -2,7 +2,6 @@ package com.petiyaak.box.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,8 +16,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.functions.Consumer;
 
@@ -26,7 +23,8 @@ import io.reactivex.functions.Consumer;
  * Created by chenzhaolin on 2019/11/4.
  */
 public class PetiyaakInfoActivity extends BaseActivity {
-
+    private  final int REQUEST_CODE_OPEN_GPS = 1;
+    private  final int REQUEST_CODE_PERMISSION_LOCATION = 2;
 
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
@@ -43,6 +41,7 @@ public class PetiyaakInfoActivity extends BaseActivity {
     @BindView(R.id.info_finger)
     LinearLayout infoFinger;
 
+
     @Override
     protected int getContentView() {
         return R.layout.activity_petiyaak_info;
@@ -52,7 +51,7 @@ public class PetiyaakInfoActivity extends BaseActivity {
     @Override
     public void initData() {
         mainTitleBack.setVisibility(View.VISIBLE);
-
+        mainTitleTitle.setText("My petiyaakInfo Box");
     }
 
     @Override
@@ -94,4 +93,9 @@ public class PetiyaakInfoActivity extends BaseActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

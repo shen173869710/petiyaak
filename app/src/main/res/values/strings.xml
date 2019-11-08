@@ -26,4 +26,24 @@
 
     <string name="petiyaal_add">Add User</string>
     <string name="petiyaal_title">My Petiyaak Box</string>
+
+
+
+    <string name="notifyTitle">notify</string>
+    <string name="gpsNotifyMsg">The current mobile phone scanning Bluetooth needs to turn on the positioning function.</string>
+    <string name="setting">Go to settings</string>
+    <string name="cancel">Cancle</string>
+
+
+    <string name="connect">connect</string>
+    <string name="connected">connected</string>
+    <string name="disconnect">disconnect</string>
+    <string name="enter">enter</string>
+
+
+
+    <string name="connect_fail">connect fail</string>
+    <string name="active_disconnected">active disconnected</string>
+    <string name="disconnected">disconnected</string>
+
 </resources>

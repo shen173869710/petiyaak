@@ -7,33 +7,47 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
  */
 public class PetiyaakBoxInfo implements MultiItemEntity {
 
-    private String itemTitle;
-    private String itemName;
-    private String itemPwd;
+    private String itemUserName;
+    private String itemBlueName;
+    private String itemUserPwd;
+    private boolean itemBlueStatus;
     private int type;
 
-    public String getItemTitle() {
-        return itemTitle;
+
+    public PetiyaakBoxInfo(int type) {
+        this.type = type;
     }
 
-    public void setItemTitle(String itemTitle) {
-        this.itemTitle = itemTitle;
+    public String getItemUserName() {
+        return itemUserName;
     }
 
-    public String getItemName() {
-        return itemName;
+    public void setItemUserName(String itemUserName) {
+        this.itemUserName = itemUserName;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public String getItemBlueName() {
+        return itemBlueName;
     }
 
-    public String getItemPwd() {
-        return itemPwd;
+    public void setItemBlueName(String itemBlueName) {
+        this.itemBlueName = itemBlueName;
     }
 
-    public void setItemPwd(String itemPwd) {
-        this.itemPwd = itemPwd;
+    public String getItemUserPwd() {
+        return itemUserPwd;
+    }
+
+    public void setItemUserPwd(String itemUserPwd) {
+        this.itemUserPwd = itemUserPwd;
+    }
+
+    public boolean isItemBlueStatus() {
+        return itemBlueStatus;
+    }
+
+    public void setItemBlueStatus(boolean itemBlueStatus) {
+        this.itemBlueStatus = itemBlueStatus;
     }
 
     public int getType() {
@@ -41,10 +55,6 @@ public class PetiyaakBoxInfo implements MultiItemEntity {
     }
 
     public void setType(int type) {
-        this.type = type;
-    }
-
-    public PetiyaakBoxInfo(int type) {
         this.type = type;
     }
 
