@@ -3,7 +3,9 @@ package com.petiyaak.box.customview;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,6 +41,7 @@ public class InputDialog extends Dialog {
         EditText input_edittext = findViewById(R.id.input_edittext);
 
         TextView dialog_ok = findViewById(R.id.input_ok);
+        dialog_ok.setText(content.ok);
         dialog_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,9 +54,6 @@ public class InputDialog extends Dialog {
                 dismiss();
             }
         });
-
-
-
 
     }
 

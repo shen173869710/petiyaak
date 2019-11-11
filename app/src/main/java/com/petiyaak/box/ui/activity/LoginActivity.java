@@ -59,5 +59,6 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.login_submit)
     public void onClick() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 }

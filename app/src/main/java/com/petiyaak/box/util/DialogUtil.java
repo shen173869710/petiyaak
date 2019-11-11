@@ -18,8 +18,8 @@ public class DialogUtil {
 
     public static void addPetiyaak(Context context, OnDialogClick onDialogClick) {
         DialogContent content = new DialogContent();
-        content.desc = "title";
-        content.ok = "next";
+        content.desc = "add petiyaak box";
+        content.ok = "save";
         InputDialog.show(context, content, onDialogClick);
     }
 
@@ -30,7 +30,10 @@ public class DialogUtil {
     public static void delPetiyaak(Context context, OnDialogClick onDialogClick) {
         DialogContent content = new DialogContent();
         content.desc = "Are you sure want to delete this Petiyaakbox?";
-        InputDialog.show(context, content, onDialogClick);
+        content.hideEidt = true;
+        content.ok = "Ok";
+        content.cancle = "No";
+        AddUserDialog.show(context, content, onDialogClick);
     }
 
     /**

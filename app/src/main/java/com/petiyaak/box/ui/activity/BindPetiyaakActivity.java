@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -46,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -252,10 +250,10 @@ public class BindPetiyaakActivity extends BaseActivity {
     }
 
     private void connect(final BleDevice bleDevice) {
-        showDialog();
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
+                showDialog();
             }
             @Override
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
@@ -271,6 +269,7 @@ public class BindPetiyaakActivity extends BaseActivity {
                 EventBus.getDefault().post(info);
                 mDeviceAdapter.addDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
+                bluelist.scrollToPosition(0);
             }
 
             @Override

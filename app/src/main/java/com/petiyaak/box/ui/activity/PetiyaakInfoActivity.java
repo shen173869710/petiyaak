@@ -6,19 +6,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.constant.ConstantEntiy;
-import com.petiyaak.box.event.UserStatusEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.presenter.BasePresenter;
-
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.functions.Consumer;
@@ -42,7 +37,6 @@ public class PetiyaakInfoActivity extends BaseActivity {
     LinearLayout infoNext;
     @BindView(R.id.info_finger)
     LinearLayout infoFinger;
-
     @BindView(R.id.petiyaak_info_name)
     TextView petiyaakInfoName;
     @BindView(R.id.petiyaak_info_status)
@@ -56,7 +50,6 @@ public class PetiyaakInfoActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        EventBus.getDefault().register(this);
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
         mainTitleBack.setVisibility(View.VISIBLE);
         mainTitleTitle.setText("My petiyaakInfo Box");
@@ -95,6 +88,17 @@ public class PetiyaakInfoActivity extends BaseActivity {
                 startActivity(new Intent(PetiyaakInfoActivity.this, BindFingerActivity.class));
             }
         });
+
+        RxView.clicks(infoSetting).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                Intent intent = new Intent(PetiyaakInfoActivity.this, SettingActivity.class);
+                intent.putExtra(ConstantEntiy.INTENT_BOX, info);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     @Override
@@ -110,7 +114,8 @@ public class PetiyaakInfoActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPetiyaakBoxInfo(PetiyaakBoxInfo event) {
         if (event != null) {
-            info = event;
+            info.setItemBlueStatus(event.isItemBlueStatus());
+            info.setItemBlueName(event.getItemBlueName());
             initData();
         }
     }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <include
+        android:id="@+id/main_title_bar"
+        layout="@layout/main_title_bar"></include>
+
+    <TextView
+        android:id="@+id/setting_open"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:text="open petiyaak box"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_16"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/main_blue_bg"
+        ></TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_vertical"
+        >
+    <com.petiyaak.box.customview.MClearEditText
+        android:id="@+id/setting_send_value"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        android:hint="send cmd"
+        android:textSize="14sp"
+        app:mClearEditText_bottomLineColor="@color/colorAccent"
+        app:mClearEditText_bottomLineWidth="1dp"
+        app:mClearEditText_disableClear="false"
+        app:mClearEditText_rightDrawableSize="20dp"
+        />
+
+        <TextView
+            android:id="@+id/setting_send"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/main_blue_bg"
+            android:gravity="center"
+            android:text="send"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_16"></TextView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_vertical"
+        >
+        <com.petiyaak.box.customview.MClearEditText
+            android:id="@+id/setting_receive_value"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:hint="receive cmd"
+            android:textSize="14sp"
+            android:focusable="false"
+            app:mClearEditText_bottomLineColor="@color/colorAccent"
+            app:mClearEditText_bottomLineWidth="1dp"
+            app:mClearEditText_disableClear="false"
+            app:mClearEditText_rightDrawableSize="20dp"
+            />
+    </LinearLayout>
+</LinearLayout>

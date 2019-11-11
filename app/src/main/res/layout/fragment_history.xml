@@ -3,11 +3,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    xmlns:tl="http://schemas.android.com/tools"
+    android:orientation="vertical">
     <include layout="@layout/main_title_bar"
         android:id="@+id/main_title_bar"
         ></include>
 
+    <com.flyco.tablayout.SlidingTabLayout
+        android:id="@+id/history_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        app:tl_textSelectColor="@color/blue"
+        app:tl_textUnselectColor="@color/black"
+        app:tl_tab_space_equal="true"
+        app:tl_underline_gravity="BOTTOM"
+        app:tl_underline_height="1dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        >
+        <View
+            android:id="@+id/history_view_1"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/blue"
+            />
+        <View
+            android:id="@+id/history_view_2"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/blue"
+            />
+        <View
+            android:id="@+id/history_view_3"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/blue"
+            />
+        ></LinearLayout>
+
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/history_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

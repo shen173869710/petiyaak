@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.clj.fastble.BleManager;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.presenter.BasePresenter;
@@ -141,5 +142,12 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BleManager.getInstance().disconnectAllDevice();
+        BleManager.getInstance().destroy();
     }
 }

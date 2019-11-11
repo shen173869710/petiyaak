@@ -41,13 +41,15 @@
 
         <TextView
             android:id="@+id/login_submit"
-            android:layout_width="@dimen/main_login_btn_width"
-            android:layout_height="@dimen/main_login_btn_height"
+            android:layout_width="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_height="60dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/login_button_sel"
             android:drawableLeft="@mipmap/icon_lock"
             android:text="@string/login_submit"
-            android:textSize="@dimen/size_20"
+            android:textSize="@dimen/size_18"
             android:gravity="center"
             android:textColor="@color/white" />
 
@@ -57,7 +59,7 @@
             android:text="Create a new account Sign up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/size_20"
+            android:textSize="@dimen/size_16"
             android:gravity="center"
             android:textColor="@color/black"
             ></TextView>

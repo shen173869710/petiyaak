@@ -25,9 +25,7 @@ import com.petiyaak.box.util.DialogUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -96,18 +94,7 @@ public class PetiyaakFragment extends BaseFragment {
 
                         @Override
                         public void onDialogCloseClick(String value) {
-                            DialogUtil.delPetiyaak(mContext, new OnDialogClick() {
-                                @Override
-                                public void onDialogOkClick(String value) {
-                                    infos.remove(position);
-                                    mAdapter.notifyDataSetChanged();
-                                }
 
-                                @Override
-                                public void onDialogCloseClick(String value) {
-
-                                }
-                            });
                         }
                     });
                 }else {
@@ -117,6 +104,26 @@ public class PetiyaakFragment extends BaseFragment {
                 }
             }
         });
+
+        mAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+                DialogUtil.delPetiyaak(mContext, new OnDialogClick() {
+                    @Override
+                    public void onDialogOkClick(String value) {
+                        infos.remove(position);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onDialogCloseClick(String value) {
+
+                    }
+                });
+                return false;
+            }
+        });
+
     }
 
 
@@ -151,10 +158,8 @@ public class PetiyaakFragment extends BaseFragment {
 
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-
             // Add top margin only for the first item to avoid double space between items
-
-            outRect.top = space;
+            outRect.right = space;
         }
     }
 
