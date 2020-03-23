@@ -1,8 +1,5 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
@@ -15,31 +12,99 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    /**
+     *  编译不同版本的包
+     */
+    flavorDimensions "petiyaak"
+    productFlavors {
+        pro {
+            versionName "1.0.0"
+            dimension "petiyaak"
+            manifestPlaceholders = [
+                    PACKAGE_NAME: "com.petiyaak.box",
+                    APP_NAME    : "petiyaak_release",
+            ]
+        }
+
+        uat {
+            versionName "1.0.0"
+            dimension "petiyaak"
+            manifestPlaceholders = [
+                    PACKAGE_NAME: "com.petiyaak.box",
+                    APP_NAME    : "petiyaak_uat",
+            ]
+        }
+    }
+
+
+    signingConfigs {
+        release {
+            storeFile file('petiyaak.jks')
+            storePassword "p123456"
+            keyAlias "key0"
+            keyPassword "p123456"
+        }
+        debug {
+            storeFile file("petiyaak.jks")
+            storePassword "p123456"
+            keyAlias "key0"
+            keyPassword "p123456"
+        }
+    }
+
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            //Zipalign优化
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    android.applicationVariants.all {
+        variant ->
+            //打包生成apk
+            variant.outputs.all {
+                output -> outputFileName = "petiyaak_box_v" + variant.versionName + "_" + buildType.name + ".apk"
+            }
+//            androidUrl.get(variant.flavorName).each {
+//                urlBean ->
+//                    buildConfigField "String", urlBean.key, urlBean.value
+//            }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dexOptions {
+        javaMaxHeapSize "8g"
+        preDexLibraries = false
+    }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
-
-    implementation 'com.android.support:recyclerview-v7:28.1.1'
     /*RxLifecycle基础库*/
     implementation 'com.trello.rxlifecycle2:rxlifecycle:2.1.0'
     implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
@@ -63,7 +128,7 @@ dependencies {
 
     implementation 'com.aurelhubert:ahbottomnavigation:2.3.4'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta11'
     implementation 'com.kyleduo.switchbutton:library:2.0.0'
     implementation 'me.drakeet.support:toastcompat:1.1.0'
     implementation 'com.clj.fastble:FastBleLib:2.3.4'

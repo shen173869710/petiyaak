@@ -1,12 +1,7 @@
 package com.petiyaak.box.adapter;
 
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.petiyaak.box.R;
 import com.petiyaak.box.model.bean.UserInfo;
 

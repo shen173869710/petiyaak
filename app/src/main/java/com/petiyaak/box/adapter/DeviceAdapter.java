@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.data.BleDevice;
 import com.petiyaak.box.R;
@@ -77,25 +77,25 @@ public class DeviceAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
 
     public void addDevice(BleDevice bleDevice) {
         removeDevice(bleDevice);
-        mData.add(0,bleDevice);
+        getData().add(0,bleDevice);
     }
 
     public void removeDevice(BleDevice bleDevice) {
         int has = -1;
-        for (int i = 0; i < mData.size(); i++) {
-            BleDevice device = mData.get(i);
+        for (int i = 0; i < getData().size(); i++) {
+            BleDevice device = getData().get(i);
             if (bleDevice.getKey().equals(device.getKey())) {
                has = i;
             }
         }
         if (has >= 0) {
-            mData.remove(has);
+            getData().remove(has);
         }
     }
 
 
     public void clearScanDevice() {
-        mData.clear();
+        getData().clear();
     }
 
     public interface OnDeviceClickListener {

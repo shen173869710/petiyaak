@@ -4,14 +4,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.petiyaak.box.R;
 import com.petiyaak.box.model.bean.UserInfo;
-
 import java.util.List;
-
 import io.reactivex.annotations.Nullable;
 
 /**
@@ -41,20 +38,20 @@ public class UserListAdapter extends BaseQuickAdapter<UserInfo, BaseViewHolder> 
         ImageView user_finger_5 = holder.getView(R.id.user_finger_5);
         TextView user_finger_5_value = holder.getView(R.id.user_finger_5_value);
         if (item.leftFinger) {
-            holder.setTextColor(R.id.user_left_title, mContext.getResources().getColor(R.color.blue));
-            holder.setBackgroundColor(R.id.user_left_icon, mContext.getResources().getColor(R.color.blue));
-            holder.setTextColor(R.id.user_right_title, mContext.getResources().getColor(R.color.black_30));
-            holder.setBackgroundColor(R.id.user_right_icon, mContext.getResources().getColor(R.color.black_30));
+            holder.setTextColor(R.id.user_left_title, getContext().getResources().getColor(R.color.blue));
+            holder.setBackgroundColor(R.id.user_left_icon, getContext().getResources().getColor(R.color.blue));
+            holder.setTextColor(R.id.user_right_title, getContext().getResources().getColor(R.color.black_30));
+            holder.setBackgroundColor(R.id.user_right_icon, getContext().getResources().getColor(R.color.black_30));
             showSel(user_finger_1, user_finger_1_value, item.finger1);
             showSel(user_finger_2, user_finger_2_value, item.finger2);
             showSel(user_finger_3, user_finger_3_value, item.finger3);
             showSel(user_finger_4, user_finger_4_value, item.finger4);
             showSel(user_finger_5, user_finger_5_value, item.finger5);
         }else {
-            holder.setTextColor(R.id.user_left_title, mContext.getResources().getColor(R.color.black_30));
-            holder.setBackgroundColor(R.id.user_left_icon, mContext.getResources().getColor(R.color.black_30));
-            holder.setTextColor(R.id.user_right_title, mContext.getResources().getColor(R.color.blue));
-            holder.setBackgroundColor(R.id.user_right_icon, mContext.getResources().getColor(R.color.blue));
+            holder.setTextColor(R.id.user_left_title, getContext().getResources().getColor(R.color.black_30));
+            holder.setBackgroundColor(R.id.user_left_icon, getContext().getResources().getColor(R.color.black_30));
+            holder.setTextColor(R.id.user_right_title, getContext().getResources().getColor(R.color.blue));
+            holder.setBackgroundColor(R.id.user_right_icon, getContext().getResources().getColor(R.color.blue));
             showSel(user_finger_1, user_finger_1_value, item.finger6);
             showSel(user_finger_2, user_finger_2_value, item.finger7);
             showSel(user_finger_3, user_finger_3_value, item.finger8);
@@ -88,10 +85,10 @@ public class UserListAdapter extends BaseQuickAdapter<UserInfo, BaseViewHolder> 
         }
         if (isSel) {
             finger.setBackgroundResource(R.mipmap.finger_p);
-            value.setTextColor(mContext.getResources().getColor(R.color.blue));
+            value.setTextColor(getContext().getResources().getColor(R.color.blue));
         }else {
             finger.setBackgroundResource(R.mipmap.finger_n);
-            value.setTextColor(mContext.getResources().getColor(R.color.black_30));
+            value.setTextColor(getContext().getResources().getColor(R.color.black_30));
         }
     }
 

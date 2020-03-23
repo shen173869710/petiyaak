@@ -29,12 +29,10 @@ public class HttpManager {
      * @param onResultListener
      * @param compositeDisposable
      */
-    public void doHttpTaskWithDialog(final BaseView baseView, Observable observable,
-                                     CompositeDisposable compositeDisposable, final OnResultListener onResultListener) {
+    public void doHttpTaskWithDialog(final BaseView baseView, Observable observable, CompositeDisposable compositeDisposable, final OnResultListener onResultListener) {
         if (baseView != null) {
             baseView.showDialog();
         }
-
         DisposableObserver disposableObserver = new DisposableObserver() {
             @Override
             public void onNext( Object obj) {
@@ -47,8 +45,8 @@ public class HttpManager {
                     }else{
                         if(respone.isOk()){
                             onResultListener.onSuccess(respone);
-                        }else if (respone.getCode() == 401){
-
+                        }else if (respone.getCode() == 400){
+                            onResultListener.onError(null,respone.getCode(), respone.getMessage());
                         }else {
                             String message = respone.getMessage();
                             if(TextUtils.isEmpty(message)){

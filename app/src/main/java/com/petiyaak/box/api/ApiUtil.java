@@ -43,11 +43,9 @@ public class ApiUtil {
             //实例化OkHttpClient
             OkHttpClient.Builder okHttpClientBuilder =createOkHttp();
 
-            OkHttpClient okhttpClient = okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
-                    .build();
-
+            OkHttpClient okhttpClient = okHttpClientBuilder.addInterceptor(httpLoggingInterceptor).build();
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("")
+                    .baseUrl("http://52.177.190.126:8081")
                     .client(okhttpClient)
                     .addConverterFactory(MyGsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -100,11 +98,11 @@ public class ApiUtil {
         okHttpClientBuilder.connectTimeout(CONNECT_TIME, TimeUnit.SECONDS);
         okHttpClientBuilder.readTimeout(RADE_TIMEOUR , TimeUnit.SECONDS);
         okHttpClientBuilder.retryOnConnectionFailure(false);
-        okHttpClientBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
-        okHttpClientBuilder.eventListenerFactory(HttpEventListener.FACTORY);
-        //默认信任所有的证书
-        okHttpClientBuilder.sslSocketFactory(createSSLSocketFactory());
-        okHttpClientBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
+//        okHttpClientBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
+//        okHttpClientBuilder.eventListenerFactory(HttpEventListener.FACTORY);
+//        //默认信任所有的证书
+//        okHttpClientBuilder.sslSocketFactory(createSSLSocketFactory());
+//        okHttpClientBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
         return okHttpClientBuilder;
     }
 

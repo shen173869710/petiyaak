@@ -3,7 +3,7 @@
 
 
     <string name="login_submit">Login</string>
-
+    <string name="login_register">Register</string>
     <string name="main_tab_1">Petiyaak lock</string>
     <string name="main_tab_2">Shared</string>
     <string name="main_tab_3">History</string>
@@ -46,4 +46,7 @@
     <string name="active_disconnected">active disconnected</string>
     <string name="disconnected">disconnected</string>
 
+
+    <string name="empty_pwd">password is not empty</string>
+    <string name="empty_name">userName is not empty</string>
 </resources>

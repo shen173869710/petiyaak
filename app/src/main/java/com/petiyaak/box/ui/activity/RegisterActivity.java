@@ -1,7 +1,6 @@
 package com.petiyaak.box.ui.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -20,26 +19,21 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 
-/**
- * Created by chenzhaolin on 2019/11/4.
- */
-public class LoginActivity extends BaseActivity <LoginPresenter> implements ILoginView {
 
+public class RegisterActivity extends BaseActivity <LoginPresenter> implements ILoginView {
 
-    @BindView(R.id.login_submit)
-    TextView loginSubmit;
-    @BindView(R.id.login_register)
-    TextView loginRegister;
+    @BindView(R.id.register_submit)
+    TextView registerSubmit;
 
-    @BindView(R.id.login_name)
-    MClearEditText loginName;
+    @BindView(R.id.register_name)
+    MClearEditText registerName;
 
-    @BindView(R.id.login_pwd)
-    MClearEditText loginPwd;
+    @BindView(R.id.register_pwd)
+    MClearEditText registerPwd;
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_login;
+        return R.layout.activity_register;
     }
 
 
@@ -50,14 +44,16 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
 
     @Override
     public void initListener() {
-        loginSubmit.setOnClickListener(new View.OnClickListener() {
+
+
+        registerSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (NoFastClickUtils.isFastClick()) {
                     return;
                 }
-                String name = loginName.getText().toString().trim();
-                String pwd = loginPwd.getText().toString().trim();
+                String name = registerName.getText().toString().trim();
+                String pwd = registerPwd.getText().toString().trim();
                 if (TextUtils.isEmpty(name)) {
                     ToastUtils.showToast(getString(R.string.empty_name));
                     return;
@@ -67,15 +63,7 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
                     ToastUtils.showToast(getString(R.string.empty_pwd));
                     return;
                 }
-
-                mPresenter.doLogin(name, pwd);
-            }
-        });
-
-        loginRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                mPresenter.doRegister(name, pwd);
             }
         });
     }
@@ -93,8 +81,7 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
 
     @Override
     public void loginSuccess(BaseRespone respone) {
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        finish();
+
     }
 
     @Override
@@ -104,7 +91,8 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
 
     @Override
     public void registerSuccess(BaseRespone respone) {
-
+        ToastUtils.showToast("register success");
+        finish();
     }
 
     @Override

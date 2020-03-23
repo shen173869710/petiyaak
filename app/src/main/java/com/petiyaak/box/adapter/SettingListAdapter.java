@@ -3,7 +3,7 @@ package com.petiyaak.box.adapter;
 import androidx.annotation.NonNull;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.petiyaak.box.R;
 import com.petiyaak.box.model.bean.SettingItem;
 

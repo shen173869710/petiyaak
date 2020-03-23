@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.PetiyaakListAdapter;
 import com.petiyaak.box.base.BaseFragment;
@@ -79,7 +81,7 @@ public class PetiyaakFragment extends BaseFragment {
 
     @Override
     public void initListener() {
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 if (position == 0) {
@@ -105,7 +107,7 @@ public class PetiyaakFragment extends BaseFragment {
             }
         });
 
-        mAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
+        mAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
                 DialogUtil.delPetiyaak(mContext, new OnDialogClick() {
