@@ -36,7 +36,6 @@ public class HttpManager {
         DisposableObserver disposableObserver = new DisposableObserver() {
             @Override
             public void onNext( Object obj) {
-                LogUtils.e(TAG, "response ======" + new Gson().toJson(obj));
                 if (baseView != null) {
                     baseView.dismissDialog();
                     BaseRespone respone =  (BaseRespone) obj;

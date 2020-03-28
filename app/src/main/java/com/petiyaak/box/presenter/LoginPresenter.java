@@ -1,9 +1,7 @@
 package com.petiyaak.box.presenter;
 
 
-
 import com.petiyaak.box.api.HttpManager;
-import com.petiyaak.box.model.requset.BaseRequest;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.view.ILoginView;
 

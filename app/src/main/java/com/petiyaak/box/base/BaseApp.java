@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 
 import com.clj.fastble.BleManager;
+import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.util.LogUtils;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class BaseApp extends Application {
         return mBaseApp;
     }
 
+    public static UserInfo userInfo;
 
 
     @Override

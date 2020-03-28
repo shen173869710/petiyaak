@@ -58,7 +58,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initListener() {
-
         bottomBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {

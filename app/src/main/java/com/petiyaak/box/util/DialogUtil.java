@@ -61,4 +61,30 @@ public class DialogUtil {
         content.hideEidt = true;
         AddUserDialog.show(context, content, onDialogClick);
     }
+
+    /**
+     *   添加一个用户
+     */
+
+    public static void shareToUser(Context context, String name ,OnDialogClick onDialogClick) {
+        DialogContent content = new DialogContent();
+        content.desc = "share to User " + name;
+        content.ok = "share";
+        content.cancle = "cancle";
+        content.hideEidt = true;
+        AddUserDialog.show(context, content, onDialogClick);
+    }
+
+    /**
+     *   添加一个用户
+     */
+
+    public static void cancleToUser(Context context, String name ,OnDialogClick onDialogClick) {
+        DialogContent content = new DialogContent();
+        content.desc = "cancle share to User " + name;
+        content.ok = "YES";
+        content.cancle = "NO";
+        content.hideEidt = true;
+        AddUserDialog.show(context, content, onDialogClick);
+    }
 }

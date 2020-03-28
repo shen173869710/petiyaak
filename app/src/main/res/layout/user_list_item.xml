@@ -190,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_30"
                 android:textSize="@dimen/size_14"
-                android:text="Ring"
+                android:text="small"
                 />
         </LinearLayout>
     </LinearLayout>

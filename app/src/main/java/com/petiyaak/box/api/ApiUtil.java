@@ -20,6 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by czl on 2019-7-9.
@@ -33,21 +34,20 @@ public class ApiUtil {
 
     public static ApiService createApiService() {
         try{
-            HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-                @Override
-                public void log(String message) {
-                    LogUtils.e(TAG, "----request   " + message);
-                }
-            });
+//            HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+//                @Override
+//                public void log(String message) {
+//                    LogUtils.e(TAG, "----request   " + message);
+//                }
+//            });
 
             //实例化OkHttpClient
             OkHttpClient.Builder okHttpClientBuilder =createOkHttp();
-
-            OkHttpClient okhttpClient = okHttpClientBuilder.addInterceptor(httpLoggingInterceptor).build();
+            OkHttpClient okhttpClient = okHttpClientBuilder.addInterceptor(new HttpLogInterceptor()).build();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://52.177.190.126:8081")
                     .client(okhttpClient)
-                    .addConverterFactory(MyGsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
             return retrofit.create(ApiService.class);
@@ -70,7 +70,6 @@ public class ApiUtil {
             });
 
             httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
             //实例化OkHttpClient
             OkHttpClient.Builder okHttpClientBuilder =createOkHttp();
             OkHttpClient client = okHttpClientBuilder.addInterceptor(httpLoggingInterceptor).build();
@@ -79,7 +78,7 @@ public class ApiUtil {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)
                     .client(client)
-                    .addConverterFactory(MyGsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
             return retrofit.create(ApiService.class);

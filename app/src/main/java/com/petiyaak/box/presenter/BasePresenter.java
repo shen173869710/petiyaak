@@ -63,7 +63,7 @@ public class BasePresenter<T extends BaseView> implements Presenter<T> {
 
     public void doHttpTaskWihtDialog(Observable observable, final HttpManager.OnResultListener onResultListener) {
 //        if (BaseApp.getInstance().isConnectNomarl()) {
-//            httpManager.doHttpTaskWithDialog(getBaseView(), observable,mCompositeDisposable,onResultListener);
+            httpManager.doHttpTask(getBaseView(), observable,mCompositeDisposable,onResultListener);
 //        }else {
 //            String error = "网络已经断开,请检查你的网络";
 //            if (onResultListener != null) {
@@ -71,7 +71,6 @@ public class BasePresenter<T extends BaseView> implements Presenter<T> {
 //            }
 //            ToastUtils.showToast(error);
 //        }
-
     }
 }
 

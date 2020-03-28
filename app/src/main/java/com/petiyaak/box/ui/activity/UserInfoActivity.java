@@ -11,20 +11,23 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.constant.ConstantEntiy;
+import com.petiyaak.box.event.ShareSucessEvent;
+import com.petiyaak.box.model.bean.FingerInfo;
+import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
-import com.petiyaak.box.presenter.BasePresenter;
+import com.petiyaak.box.model.respone.BaseRespone;
+import com.petiyaak.box.presenter.SharePresenter;
+import com.petiyaak.box.util.NoFastClickUtils;
+import com.petiyaak.box.util.ToastUtils;
+import com.petiyaak.box.view.IShareView;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
-/**
- * Created by chenzhaolin on 2019/11/4.
- */
-public class UserInfoActivity extends BaseActivity {
-
+public class UserInfoActivity extends BaseActivity <SharePresenter> implements IShareView {
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
     @BindView(R.id.main_title_title)
@@ -66,8 +69,17 @@ public class UserInfoActivity extends BaseActivity {
     @BindView(R.id.user_finger_5_value)
     TextView userFinger5Value;
 
+    @BindView(R.id.share_submit)
+    TextView shareSubmit;
+    private FingerInfo fingerInfo;
+    PetiyaakBoxInfo info;
+    UserInfo userInfo;
+    boolean isBind;
 
-    private UserInfo userInfo;
+
+    private int postion = 0;
+    private String fingerid;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_user_info;
@@ -76,35 +88,42 @@ public class UserInfoActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
-        userInfo = (UserInfo) getIntent().getSerializableExtra("user");
+        fingerInfo = new FingerInfo();
         mainTitleTitle.setText("Scan Left and Right Finger");
-        uesrItemName.setText(userInfo.userName);
+        uesrItemName.setText(fingerInfo.userName);
         mainTitleBack.setVisibility(View.VISIBLE);
+
+        info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
+        userInfo = (UserInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_USER);
+        isBind = getIntent().getBooleanExtra(ConstantEntiy.INTENT_BIND,false);
         initFinger();
+
+        if (isBind) {
+            shareSubmit.setText("Bind Finger");
+        }
     }
 
     private void initFinger() {
-        if (userInfo.leftFinger) {
+        if (fingerInfo.leftFinger) {
             userLeftTitle.setTextColor(getResources().getColor(R.color.blue));
             userLeftIcon.setBackgroundColor(getResources().getColor(R.color.blue));
             userRightTitle.setTextColor(getResources().getColor(R.color.black_30));
             userRightIcon.setBackgroundColor(getResources().getColor(R.color.black_30));
-            showSel(userFinger1, userFinger1Value, userInfo.finger1);
-            showSel(userFinger2, userFinger2Value, userInfo.finger2);
-            showSel(userFinger3, userFinger3Value, userInfo.finger3);
-            showSel(userFinger4, userFinger4Value, userInfo.finger4);
-            showSel(userFinger5, userFinger5Value, userInfo.finger5);
+            showSel(userFinger1, userFinger1Value, fingerInfo.finger1);
+            showSel(userFinger2, userFinger2Value, fingerInfo.finger2);
+            showSel(userFinger3, userFinger3Value, fingerInfo.finger3);
+            showSel(userFinger4, userFinger4Value, fingerInfo.finger4);
+            showSel(userFinger5, userFinger5Value, fingerInfo.finger5);
         }else {
             userRightTitle.setTextColor(getResources().getColor(R.color.blue));
             userRightIcon.setBackgroundColor(getResources().getColor(R.color.blue));
             userLeftTitle.setTextColor(getResources().getColor(R.color.black_30));
             userLeftIcon.setBackgroundColor(getResources().getColor(R.color.black_30));
-            showSel(userFinger1, userFinger1Value, userInfo.finger6);
-            showSel(userFinger2, userFinger2Value, userInfo.finger7);
-            showSel(userFinger3, userFinger3Value, userInfo.finger8);
-            showSel(userFinger4, userFinger4Value, userInfo.finger9);
-            showSel(userFinger5, userFinger5Value, userInfo.finger10);
+            showSel(userFinger1, userFinger1Value, fingerInfo.finger6);
+            showSel(userFinger2, userFinger2Value, fingerInfo.finger7);
+            showSel(userFinger3, userFinger3Value, fingerInfo.finger8);
+            showSel(userFinger4, userFinger4Value, fingerInfo.finger9);
+            showSel(userFinger5, userFinger5Value, fingerInfo.finger10);
         }
     }
 
@@ -120,7 +139,7 @@ public class UserInfoActivity extends BaseActivity {
         RxView.clicks(userLeft).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                userInfo.leftFinger = true;
+                fingerInfo.leftFinger = true;
                 initFinger();
             }
         });
@@ -128,32 +147,109 @@ public class UserInfoActivity extends BaseActivity {
         RxView.clicks(userRight).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                userInfo.leftFinger = false;
+                fingerInfo.leftFinger = false;
                 initFinger();
             }
         });
 
-      
+        shareSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                if (isBind) {
+                    mPresenter.addFingerprints(userInfo.getId(), 2,postion, postion,1);
+                }else {
+                    mPresenter.shareToUser(userInfo.getId(), 2);
+                }
+
+            }
+        });
+
+
+        userFinger1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+
+                if (fingerInfo.leftFinger) {
+                    postion = 1;
+                    fingerid = fingerInfo.finger1;
+                }else {
+                    postion = 6;
+                }
+            }
+        });
+
+        userFinger2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                if (fingerInfo.leftFinger) {
+                    postion = 2;
+                }else {
+                    postion = 7;
+                }
+            }
+        });
+
+        userFinger3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                if (fingerInfo.leftFinger) {
+                    postion = 3;
+                }else {
+                    postion = 8;
+                }
+            }
+        });
+
+        userFinger4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                if (fingerInfo.leftFinger) {
+                    postion = 4;
+                }else {
+                    postion = 9;
+                }
+            }
+        });
+
+        userFinger5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                if (fingerInfo.leftFinger) {
+                    postion = 5;
+                }else {
+                    postion = 10;
+                }
+            }
+        });
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected SharePresenter createPresenter() {
+        return new SharePresenter();
     }
 
     @Override
     public Activity getActivity() {
         return this;
     }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoingEvent(int i) {
-
-    }
-
-
-
 
 
     public void showSel (ImageView finger, TextView value, String fingerCode) {
@@ -168,5 +264,22 @@ public class UserInfoActivity extends BaseActivity {
             finger.setBackgroundResource(R.mipmap.finger_n);
             value.setTextColor(getResources().getColor(R.color.black_30));
         }
+    }
+
+    @Override
+    public void success(BaseRespone respone) {
+        PetiyaakBoxInfo petiyaakBoxInfo = (PetiyaakBoxInfo)respone.getData();
+        if (petiyaakBoxInfo != null) {
+            ToastUtils.showToast("share success");
+            EventBus.getDefault().post(new ShareSucessEvent());
+            finish();
+        }else {
+            ToastUtils.showToast("share faile");
+        }
+    }
+
+    @Override
+    public void fail(Throwable error, Integer code, String msg) {
+        ToastUtils.showToast("share faile "+msg);
     }
 }

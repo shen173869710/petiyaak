@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="vertical"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:padding="10dp"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/share_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/slt_tab_1"
+            app:civ_border_color="#FFFFFFFF"
+            android:layout_marginLeft="10dp"
+            app:civ_border_width="2dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/share_icon"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+            <TextView
+                android:id="@+id/share_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Janahan Gnana opened "
+                android:textColor="@color/button_yellow"
+                android:textSize="@dimen/size_14"></TextView>
+
+            <TextView
+                android:id="@+id/share_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2019/11/11  11:11"
+                android:textColor="@color/black"
+                android:textSize="@dimen/size_14"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="address  "
+                android:textColor="@color/black"
+                android:textSize="@dimen/size_14"></TextView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/share_submit"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:background="@drawable/login_button_sel"
+            android:text="share"
+            android:textSize="@dimen/size_12"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="@color/line"/>
+</LinearLayout>

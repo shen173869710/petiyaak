@@ -39,6 +39,7 @@
         <activity android:name=".ui.activity.BindPetiyaakActivity"  />
         <activity android:name=".ui.activity.UserInfoActivity"  />
         <activity android:name=".ui.activity.SettingActivity"  />
+        <activity android:name=".ui.activity.ShareActivity"  />
     </application>
 
 </manifest>

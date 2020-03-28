@@ -5,17 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.HistoryAllAdapter;
-import com.petiyaak.box.adapter.SettingListAdapter;
 import com.petiyaak.box.base.BaseFragment;
-import com.petiyaak.box.model.bean.SettingItem;
-import com.petiyaak.box.model.bean.UserInfo;
+import com.petiyaak.box.model.bean.FingerInfo;
 import com.petiyaak.box.presenter.BasePresenter;
 
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public class HistoryAllFragment extends BaseFragment {
 
     Unbinder unbinder;
 
-    private ArrayList<UserInfo>settingItems = new ArrayList<>();
+    private ArrayList<FingerInfo>settingItems = new ArrayList<>();
 
     public static HistoryAllFragment newInstance() {
         HistoryAllFragment fragment = new HistoryAllFragment();
@@ -58,16 +55,16 @@ public class HistoryAllFragment extends BaseFragment {
     protected void initView() {
         settingList.setLayoutManager(new LinearLayoutManager(mContext));
         settingList.addItemDecoration(new SpacesItemDecoration(10));
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
-        settingItems.add(new UserInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
+        settingItems.add(new FingerInfo());
         adapter = new HistoryAllAdapter(settingItems);
         settingList.setAdapter(adapter);
     }

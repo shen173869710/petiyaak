@@ -7,10 +7,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
@@ -19,13 +17,11 @@ import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.UserListAdapter;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.customview.OnDialogClick;
-import com.petiyaak.box.model.bean.UserInfo;
+import com.petiyaak.box.model.bean.FingerInfo;
 import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.util.DialogUtil;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +44,7 @@ public class BindFingerActivity extends BaseActivity {
     @BindView(R.id.finger_list)
     RecyclerView fingerList;
 
-    private List<UserInfo> infos = new ArrayList<>();
+    private List<FingerInfo> infos = new ArrayList<>();
     private UserListAdapter mAdapter;
 
     @Override
@@ -58,7 +54,7 @@ public class BindFingerActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        mainTitleTitle.setText(R.string.petiyaal_title);
+        mainTitleTitle.setText("Add Finger");
         mainTitleBack.setVisibility(View.VISIBLE);
 
         fingerList.setLayoutManager(new LinearLayoutManager(this));
@@ -83,7 +79,7 @@ public class BindFingerActivity extends BaseActivity {
                 DialogUtil.addUser(BindFingerActivity.this, new OnDialogClick() {
                     @Override
                     public void onDialogOkClick(String value) {
-                        UserInfo info = new UserInfo();
+                        FingerInfo info = new FingerInfo();
                         info.userName = value;
                         info.leftFinger = true;
                         infos.add(info);
@@ -157,11 +153,6 @@ public class BindFingerActivity extends BaseActivity {
     @Override
     public Activity getActivity() {
         return this;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoingEvent(int i) {
-
     }
 
 }

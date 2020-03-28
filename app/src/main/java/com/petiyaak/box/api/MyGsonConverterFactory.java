@@ -99,7 +99,7 @@ public class MyGsonConverterFactory extends Converter.Factory{
 //               resp = resp.replace("\"p\":[", "\"list\":[");
 //                LogUtils.e("--------resp list ",resp.toString());
 //            }else {
-//                LogUtils.e("--------resp Object  ",resp.toString());
+//                LogUtils.e("--------resp Object  ",value.string());
 //            }
             JsonReader jsonReader = mGson.newJsonReader(new StringReader(value.string()));
             try {

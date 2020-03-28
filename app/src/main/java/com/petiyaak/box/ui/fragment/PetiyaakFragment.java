@@ -20,31 +20,35 @@ import com.petiyaak.box.base.BaseFragment;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.OnDialogClick;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
-import com.petiyaak.box.presenter.BasePresenter;
+import com.petiyaak.box.model.respone.BaseRespone;
+import com.petiyaak.box.presenter.PetiyaakPresenter;
 import com.petiyaak.box.ui.activity.PetiyaakInfoActivity;
 import com.petiyaak.box.util.DialogUtil;
+import com.petiyaak.box.view.IPetiyaakView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import java.util.ArrayList;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.Unbinder;
 /**
  * Created by chenzhaolin on 2019/7/10.
  */
 
-public class PetiyaakFragment extends BaseFragment {
+public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements IPetiyaakView {
 
     Unbinder unbinder;
     @BindView(R.id.petiyaak_list)
     RecyclerView petiyaakList;
     PetiyaakListAdapter mAdapter;
-
     private View view;
     private ArrayList<PetiyaakBoxInfo> infos = new ArrayList<>();
+
+
     public static PetiyaakFragment newInstance() {
         PetiyaakFragment fragment = new PetiyaakFragment();
         return fragment;
@@ -52,8 +56,8 @@ public class PetiyaakFragment extends BaseFragment {
 
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected PetiyaakPresenter createPresenter() {
+        return new PetiyaakPresenter();
     }
 
     @Override
@@ -72,6 +76,7 @@ public class PetiyaakFragment extends BaseFragment {
         infos.add(new PetiyaakBoxInfo(0));
         mAdapter = new PetiyaakListAdapter(infos);
         petiyaakList.setAdapter(mAdapter);
+        mPresenter.getOwnerFingerprintsList(true);
     }
 
     @Override
@@ -89,7 +94,7 @@ public class PetiyaakFragment extends BaseFragment {
                         @Override
                         public void onDialogOkClick(String value) {
                             PetiyaakBoxInfo info = new PetiyaakBoxInfo(1);
-                            info.setItemUserName(value);
+                            info.setDeviceName(value);
                             infos.add(info);
                             mAdapter.notifyDataSetChanged();
                         }
@@ -134,21 +139,35 @@ public class PetiyaakFragment extends BaseFragment {
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         rootView.setFocusableInTouchMode(true);
-        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void success(BaseRespone respone) {
+        List<PetiyaakBoxInfo> list = (List<PetiyaakBoxInfo>)respone.data;
+        if (list != null && list.size() > 0) {
+            infos.clear();
+            infos.add(new PetiyaakBoxInfo(0));
+            infos.addAll(list);
+
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void fail(Throwable error, Integer code, String msg) {
+
     }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -167,17 +186,7 @@ public class PetiyaakFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPetiyaakBoxInfo(PetiyaakBoxInfo event) {
-        if (event != null) {
-            int size = infos.size();
-            for (int i = 0; i < size; i++) {
-                PetiyaakBoxInfo info = infos.get(i);
-                if (event.getItemUserName().equals(info.getItemUserName())) {
-                    info.setItemBlueName(event.getItemBlueName());
-                    info.setItemBlueStatus(event.isItemBlueStatus());
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-        }
+        mPresenter.getOwnerFingerprintsList(false);
     }
 
 }

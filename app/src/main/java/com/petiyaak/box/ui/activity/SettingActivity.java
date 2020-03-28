@@ -18,12 +18,16 @@ import com.clj.fastble.exception.BleException;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
+import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.BasePresenter;
+import com.petiyaak.box.presenter.SharePresenter;
 import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.ToastUtils;
+import com.petiyaak.box.view.IShareView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -37,7 +41,7 @@ import io.reactivex.functions.Consumer;
 /**
  * Created by chenzhaolin on 2019/11/4.
  */
-public class SettingActivity extends BaseActivity {
+public class SettingActivity extends BaseActivity <SharePresenter> implements IShareView {
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
     @BindView(R.id.main_title_title)
@@ -77,6 +81,7 @@ public class SettingActivity extends BaseActivity {
         });
 
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
+        mPresenter.getFingerprints(BaseApp.userInfo.getId(),info.getDeviceId());
     }
 
     @Override
@@ -89,7 +94,7 @@ public class SettingActivity extends BaseActivity {
 
         int size = devices.size();
         for (int i = 0; i < size; i++) {
-            if (info.getItemBlueName().equals(devices.get(i).getName())) {
+            if (info.getBluetoothName().equals(devices.get(i).getName())) {
                 device = devices.get(i);
             }
         }
@@ -175,8 +180,8 @@ public class SettingActivity extends BaseActivity {
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected SharePresenter createPresenter() {
+        return new SharePresenter();
     }
 
     @Override
@@ -224,5 +229,18 @@ public class SettingActivity extends BaseActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public void success(BaseRespone respone) {
+        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
+        if (boxInfo != null) {
+            ToastUtils.showToast("success");
+        }
+    }
+
+    @Override
+    public void fail(Throwable error, Integer code, String msg) {
+
     }
 }

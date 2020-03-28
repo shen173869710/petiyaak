@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.petiyaak.box.R;
+import com.petiyaak.box.base.BaseApp;
+import com.petiyaak.box.model.bean.ModelEntiy;
 import com.petiyaak.box.model.bean.SettingItem;
 
 import java.util.List;
@@ -29,7 +31,9 @@ public class SettingListAdapter extends BaseMultiItemQuickAdapter<SettingItem, B
     protected void convert(@NonNull BaseViewHolder helper, SettingItem item) {
         switch (helper.getItemViewType()) {
             case 0:
-
+                helper.setImageResource(R.id.setting_icon, ModelEntiy.USER_HEAD_ID[BaseApp.userInfo.getAvatarid()]);
+                helper.setText(R.id.setting_username,BaseApp.userInfo.getUsername());
+                helper.setText(R.id.setting_phone,BaseApp.userInfo.getPhonenumber()+"");
                 break;
             case 1:
                 helper.setText(R.id.setting_item_title, item.getItemTitle());

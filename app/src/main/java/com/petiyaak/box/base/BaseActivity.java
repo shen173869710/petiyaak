@@ -1,6 +1,7 @@
 package com.petiyaak.box.base;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.ButterKnife;
 import io.reactivex.annotations.Nullable;
@@ -103,6 +106,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends RxAppCompatA
         }
     }
 
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
     private void requestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             RxPermissions rxPermission = new RxPermissions(this);
@@ -129,6 +136,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends RxAppCompatA
                         }
                     });
         }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoingEvent(int i) {
 
     }
 

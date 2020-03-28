@@ -1,36 +1,57 @@
 package com.petiyaak.box.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.petiyaak.box.R;
-import com.petiyaak.box.base.BaseFragment;
-import com.petiyaak.box.presenter.BasePresenter;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.petiyaak.box.R;
+import com.petiyaak.box.adapter.ShareDeviceListAdapter;
+import com.petiyaak.box.base.BaseFragment;
+import com.petiyaak.box.constant.ConstantEntiy;
+import com.petiyaak.box.customview.OnDialogClick;
+import com.petiyaak.box.model.bean.ModelEntiy;
+import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
+import com.petiyaak.box.model.respone.BaseRespone;
+import com.petiyaak.box.presenter.BasePresenter;
+import com.petiyaak.box.presenter.ShareListPresenter;
+import com.petiyaak.box.ui.activity.SettingActivity;
+import com.petiyaak.box.ui.activity.ShareActivity;
+import com.petiyaak.box.util.DialogUtil;
+import com.petiyaak.box.view.IShareListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 
 /**
  * Created by chenzhaolin on 2019/7/10.
  */
 
-public class SharedFragment extends BaseFragment  {
+public class SharedFragment extends BaseFragment <ShareListPresenter> implements IShareListView {
     private View view;
+    @BindView(R.id.share_list)
+    RecyclerView shareList;
+    ShareDeviceListAdapter mAdapter;
+    List<PetiyaakBoxInfo> infos = new ArrayList<>();
 
-    Unbinder unbinder;
     public static SharedFragment newInstance( ){
         SharedFragment fragment = new SharedFragment();
         return fragment;
     }
 
-
-
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected ShareListPresenter createPresenter() {
+        return new ShareListPresenter();
     }
 
     @Override
@@ -43,11 +64,28 @@ public class SharedFragment extends BaseFragment  {
         view = mView.findViewById(R.id.main_title_bar);
         TextView title = view.findViewById(R.id.main_title_title);
         title.setText(R.string.main_tab_2);
+        shareList.setLayoutManager(new LinearLayoutManager(mContext));
+        mAdapter = new ShareDeviceListAdapter(infos);
+        shareList.setAdapter(mAdapter);
+
+        mAdapter.addChildClickViewIds(R.id.share_submit);
+        mAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (view.getId() == R.id.share_submit) {
+                    Intent intent = new Intent(mContext, SettingActivity.class);
+                    intent.putExtra(ConstantEntiy.INTENT_BOX,infos.get(position));
+                   startActivity(intent);
+                }
+            }
+        });
+
+
     }
 
     @Override
     protected void initData() {
-
+        mPresenter.getCanUseredFingerprintsList();
     }
 
     @Override
@@ -55,30 +93,38 @@ public class SharedFragment extends BaseFragment  {
 
     }
 
-
-
-
     @Override
     public void firstLoad() {
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         rootView.setFocusableInTouchMode(true);
-
-        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
+
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    public void success(BaseRespone respone) {
+        List<PetiyaakBoxInfo>list = (List<PetiyaakBoxInfo>) respone.data;
+        if (list != null && list.size() > 0) {
+            infos.addAll(list);
+        }else {
+            infos.clear();
+            for (int i = 0; i < 15; i++) {
+                PetiyaakBoxInfo info = new PetiyaakBoxInfo(1);
+                info.setDeviceName("name"+i);
+                info.setBluetoothName("blue"+i);
+                infos.add(info);
+            }
+        }
     }
 
+    @Override
+    public void fail(Throwable error, Integer code, String msg) {
 
+    }
 }

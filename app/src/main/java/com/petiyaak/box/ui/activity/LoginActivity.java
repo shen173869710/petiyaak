@@ -8,15 +8,14 @@ import android.widget.TextView;
 
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.customview.MClearEditText;
+import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.LoginPresenter;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.ILoginView;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 
@@ -57,7 +56,9 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
                     return;
                 }
                 String name = loginName.getText().toString().trim();
+                name = "111111";
                 String pwd = loginPwd.getText().toString().trim();
+                pwd = "123456";
                 if (TextUtils.isEmpty(name)) {
                     ToastUtils.showToast(getString(R.string.empty_name));
                     return;
@@ -93,8 +94,15 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
 
     @Override
     public void loginSuccess(BaseRespone respone) {
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        finish();
+
+        BaseApp.userInfo = (UserInfo) respone.data;
+        if (BaseApp.userInfo != null) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        }else {
+            ToastUtils.showToast("登陆失败");
+        }
+
     }
 
     @Override
@@ -112,8 +120,4 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoingEvent(int i) {
-
-    }
 }

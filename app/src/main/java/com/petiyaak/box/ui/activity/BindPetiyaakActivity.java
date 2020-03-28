@@ -32,26 +32,26 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.DeviceAdapter;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
+import com.petiyaak.box.model.respone.BaseRespone;
+import com.petiyaak.box.model.respone.BindDeviceRespone;
 import com.petiyaak.box.presenter.BasePresenter;
+import com.petiyaak.box.presenter.BindPresenter;
 import com.petiyaak.box.util.ToastUtils;
+import com.petiyaak.box.view.IBindView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
-/**
- * Created by chenzhaolin on 2019/11/4.
- */
-public class BindPetiyaakActivity extends BaseActivity {
 
+public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implements IBindView {
 
     private  final int REQUEST_CODE_OPEN_GPS = 1;
     private  final int REQUEST_CODE_PERMISSION_LOCATION = 2;
@@ -128,14 +128,19 @@ public class BindPetiyaakActivity extends BaseActivity {
         RxView.clicks(mainTitleRight).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                checkPermissions();
+//                checkPermissions();
+                String deviceName =info.getDeviceName() ;
+                String bluetoothName = System.currentTimeMillis()+"";
+                String bluetoothMac = System.currentTimeMillis()+"mac";
+                int deviceOwnerId = BaseApp.userInfo.getId();
+                mPresenter.bindDeviced(deviceName, bluetoothName, bluetoothMac, deviceOwnerId);
             }
         });
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected BindPresenter createPresenter() {
+        return new BindPresenter();
     }
 
     @Override
@@ -264,7 +269,7 @@ public class BindPetiyaakActivity extends BaseActivity {
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 dismissDialog();
-                info.setItemBlueName(bleDevice.getName()+"");
+                info.setBluetoothName(bleDevice.getName()+"");
                 info.setItemBlueStatus(true);
                 EventBus.getDefault().post(info);
                 mDeviceAdapter.addDevice(bleDevice);
@@ -275,7 +280,7 @@ public class BindPetiyaakActivity extends BaseActivity {
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 dismissDialog();
-                info.setItemBlueName("");
+                info.setDeviceName("");
                 info.setItemBlueStatus(false);
                 EventBus.getDefault().post(info);
                 mDeviceAdapter.removeDevice(bleDevice);
@@ -311,4 +316,22 @@ public class BindPetiyaakActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void bindSuccess(BaseRespone respone) {
+        BindDeviceRespone bRespone = (BindDeviceRespone)respone.data;
+        if (bRespone != null) {
+            info.setBluetoothName(bRespone.getBluetoothName());
+            info.setItemBlueStatus(true);
+            info.setBluetoothMac(bRespone.getBluetoothMac());
+            info.setDeviceName(bRespone.getDeviceName());
+            EventBus.getDefault().post(info);
+            finish();
+        }
+
+    }
+
+    @Override
+    public void bindFail(Throwable error, Integer code, String msg) {
+        ToastUtils.showToast(msg+"");
+    }
 }

@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@mipmap/ic_default"></ImageView>
+        android:background="@mipmap/box_s"></ImageView>
 
     <TextView
         android:id="@+id/petiyaak_item_name"
@@ -22,7 +22,7 @@
         android:id="@+id/petiyaak_blue_layout"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:paddingLeft="20dp"
+        android:paddingLeft="5dp"
         >
         <ImageView
             android:id="@+id/petiyaak_blue_status"

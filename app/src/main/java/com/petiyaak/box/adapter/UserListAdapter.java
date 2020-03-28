@@ -4,29 +4,33 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.petiyaak.box.R;
+import com.petiyaak.box.model.bean.FingerInfo;
 import com.petiyaak.box.model.bean.UserInfo;
+
 import java.util.List;
+
 import io.reactivex.annotations.Nullable;
 
 /**
 
  */
-public class UserListAdapter extends BaseQuickAdapter<UserInfo, BaseViewHolder> {
+public class UserListAdapter extends BaseQuickAdapter<FingerInfo, BaseViewHolder> {
 
-    public UserListAdapter(@Nullable List<UserInfo> data) {
+    public UserListAdapter(@Nullable List<FingerInfo> data) {
         super(R.layout.user_list_item, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder holder, UserInfo item) {
+    protected void convert(BaseViewHolder holder, FingerInfo item) {
         holder.setText(R.id.uesr_item_name, item.userName);
         showFinger(holder,item);
     }
 
-    public void showFinger(BaseViewHolder holder,UserInfo item) {
+    public void showFinger(BaseViewHolder holder,FingerInfo item) {
         ImageView user_finger_1 = holder.getView(R.id.user_finger_1);
         TextView user_finger_1_value = holder.getView(R.id.user_finger_1_value);
         ImageView user_finger_2 = holder.getView(R.id.user_finger_2);
