@@ -24,11 +24,9 @@ import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.PetiyaakInfoPresenter;
-import com.petiyaak.box.presenter.SharePresenter;
 import com.petiyaak.box.util.DialogUtil;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IPetiyaakInfoView;
-import com.petiyaak.box.view.IShareView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
