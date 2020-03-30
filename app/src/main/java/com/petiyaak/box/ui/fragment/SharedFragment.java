@@ -17,15 +17,10 @@ import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.ShareDeviceListAdapter;
 import com.petiyaak.box.base.BaseFragment;
 import com.petiyaak.box.constant.ConstantEntiy;
-import com.petiyaak.box.customview.OnDialogClick;
-import com.petiyaak.box.model.bean.ModelEntiy;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
-import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.presenter.ShareListPresenter;
-import com.petiyaak.box.ui.activity.SettingActivity;
-import com.petiyaak.box.ui.activity.ShareActivity;
-import com.petiyaak.box.util.DialogUtil;
+import com.petiyaak.box.ui.activity.OptionActivity;
 import com.petiyaak.box.view.IShareListView;
 
 import java.util.ArrayList;
@@ -73,7 +68,7 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.share_submit) {
-                    Intent intent = new Intent(mContext, SettingActivity.class);
+                    Intent intent = new Intent(mContext, OptionActivity.class);
                     intent.putExtra(ConstantEntiy.INTENT_BOX,infos.get(position));
                    startActivity(intent);
                 }

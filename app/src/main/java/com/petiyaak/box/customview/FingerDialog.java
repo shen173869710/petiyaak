@@ -14,28 +14,32 @@ import android.widget.ImageView;
 import com.petiyaak.box.R;
 
 
-public class LoadingDialog extends Dialog {
-    /**
-     * 宽高由布局文件中指定（但是最底层的宽度无效，可以多嵌套一层解决）
-     */
-    public LoadingDialog(Context context) {
+public class FingerDialog extends Dialog {
+    private ImageView iv;
+    public FingerDialog(Context context) {
         super(context);
+
     }
 
-    public LoadingDialog(Context context, int style) {
+    public FingerDialog(Context context, int style) {
         super(context, style);
 
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_finger, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_loading, null);
         setContentView(view);
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        iv = (ImageView) view.findViewById(R.id.loading_image);
+        iv.setImageResource(R.drawable.main_loading);
         Window window = getWindow();
         WindowManager.LayoutParams params = window.getAttributes();
-        params.gravity = Gravity.CENTER;
+        params.gravity = Gravity.BOTTOM;
         window.setAttributes(params);
     }
+
+
 }

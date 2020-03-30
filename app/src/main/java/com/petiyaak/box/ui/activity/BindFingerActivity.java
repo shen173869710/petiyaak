@@ -20,8 +20,7 @@ import com.petiyaak.box.customview.OnDialogClick;
 import com.petiyaak.box.model.bean.FingerInfo;
 import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.util.DialogUtil;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +97,7 @@ public class BindFingerActivity extends BaseActivity {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(BindFingerActivity.this, UserInfoActivity.class);
+                Intent intent = new Intent(BindFingerActivity.this, FingerActivity.class);
                 intent.putExtra("user", infos.get(position));
                 startActivity(intent);
             }

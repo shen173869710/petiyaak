@@ -95,7 +95,7 @@ public class ShareActivity extends BaseActivity<SharePresenter> implements IShar
 //                        }
 //                    });
 
-                    Intent intent = new Intent(ShareActivity.this, UserInfoActivity.class);
+                    Intent intent = new Intent(ShareActivity.this, FingerActivity.class);
                     intent.putExtra(ConstantEntiy.INTENT_BOX,info);
                     intent.putExtra(ConstantEntiy.INTENT_USER,userInfos.get(position));
                     startActivity(intent);

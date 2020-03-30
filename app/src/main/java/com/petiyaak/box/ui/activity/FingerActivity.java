@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
@@ -21,13 +20,11 @@ import com.petiyaak.box.presenter.SharePresenter;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IShareView;
-
 import org.greenrobot.eventbus.EventBus;
-
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
-public class UserInfoActivity extends BaseActivity <SharePresenter> implements IShareView {
+public class FingerActivity extends BaseActivity <SharePresenter> implements IShareView {
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
     @BindView(R.id.main_title_title)
@@ -82,7 +79,7 @@ public class UserInfoActivity extends BaseActivity <SharePresenter> implements I
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_user_info;
+        return R.layout.activity_finger;
     }
 
 

@@ -23,7 +23,6 @@ import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
-import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.presenter.SharePresenter;
 import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.ToastUtils;
@@ -41,7 +40,7 @@ import io.reactivex.functions.Consumer;
 /**
  * Created by chenzhaolin on 2019/11/4.
  */
-public class SettingActivity extends BaseActivity <SharePresenter> implements IShareView {
+public class OptionActivity extends BaseActivity <SharePresenter> implements IShareView {
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
     @BindView(R.id.main_title_title)
@@ -65,7 +64,7 @@ public class SettingActivity extends BaseActivity <SharePresenter> implements IS
     String serverId = "";
     @Override
     protected int getContentView() {
-        return R.layout.activity_setting;
+        return R.layout.activity_option;
     }
 
 
@@ -110,16 +109,16 @@ public class SettingActivity extends BaseActivity <SharePresenter> implements IS
                                 String uuid = bchar.getUuid().toString();
                                 if (!TextUtils.isEmpty(uuid) && uuid.contains("fff4")) {
                                     readUuid = uuid;
-                                    LogUtils.e("SettingActivity", "readUUid = "+readUuid);
+                                    LogUtils.e("OptionActivity", "readUUid = "+readUuid);
                                     serverId = service.getUuid().toString();
-                                    LogUtils.e("SettingActivity", "serverId = "+serverId);
+                                    LogUtils.e("OptionActivity", "serverId = "+serverId);
                                 }
 
                                 if (!TextUtils.isEmpty(uuid) && uuid.contains("fff3")) {
                                     writeUuid = uuid;
-                                    LogUtils.e("SettingActivity", "writeUuid = "+writeUuid);
+                                    LogUtils.e("OptionActivity", "writeUuid = "+writeUuid);
                                     serverId = service.getUuid().toString();
-                                    LogUtils.e("SettingActivity", "serverId = "+serverId);
+                                    LogUtils.e("OptionActivity", "serverId = "+serverId);
                                 }
                             }
                         }
