@@ -14,6 +14,7 @@ public class FingerInfo implements Serializable {
     public String finger3;
     public String finger4;
     public String finger5;
+
     public String finger6;
     public String finger7;
     public String finger8;

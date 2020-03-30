@@ -100,6 +100,14 @@
                 android:textSize="@dimen/size_14"
                 android:text="Thumb"
                 />
+            <TextView
+                android:id="@+id/user_finger_1_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/size_16"
+                android:text=""
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -122,6 +130,14 @@
                 android:textColor="@color/black_30"
                 android:textSize="@dimen/size_14"
                 android:text="Index"
+                />
+            <TextView
+                android:id="@+id/user_finger_2_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/size_16"
+                android:text=""
                 />
         </LinearLayout>
         <LinearLayout
@@ -146,6 +162,14 @@
                 android:textSize="@dimen/size_14"
                 android:text="Middle"
                 />
+            <TextView
+                android:id="@+id/user_finger_3_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/size_16"
+                android:text=""
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -169,6 +193,14 @@
                 android:textSize="@dimen/size_14"
                 android:text="Ring"
                 />
+            <TextView
+                android:id="@+id/user_finger_4_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/size_16"
+                android:text=""
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -190,7 +222,16 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_30"
                 android:textSize="@dimen/size_14"
-                android:text="small"
+                android:text="little"
+                />
+
+            <TextView
+                android:id="@+id/user_finger_5_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/size_16"
+                android:text=""
                 />
         </LinearLayout>
     </LinearLayout>

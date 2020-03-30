@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.ShareListAdapter;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
@@ -83,22 +84,7 @@ public class ShareActivity extends BaseActivity<SharePresenter> implements IShar
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.share_submit) {
-//                    DialogUtil.shareToUser(ShareActivity.this, userInfos.get(position).getUsername(), new OnDialogClick() {
-//                        @Override
-//                        public void onDialogOkClick(String value) {
-//                            mPresenter.shareToUser(userInfos.get(position).getId(),2);
-//                        }
-//
-//                        @Override
-//                        public void onDialogCloseClick(String value) {
-//
-//                        }
-//                    });
-
-                    Intent intent = new Intent(ShareActivity.this, FingerActivity.class);
-                    intent.putExtra(ConstantEntiy.INTENT_BOX,info);
-                    intent.putExtra(ConstantEntiy.INTENT_USER,userInfos.get(position));
-                    startActivity(intent);
+                    startActivity(FingerActivity.startIntent(ShareActivity.this,info,userInfos.get(position),false));
                     finish();
                 }
             }

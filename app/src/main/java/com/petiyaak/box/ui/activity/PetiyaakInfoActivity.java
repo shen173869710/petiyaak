@@ -118,12 +118,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         RxView.clicks(infoFinger).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                Intent intent = new Intent(PetiyaakInfoActivity.this, FingerActivity.class);
-                intent.putExtra(ConstantEntiy.INTENT_BOX,info);
-                intent.putExtra(ConstantEntiy.INTENT_USER, BaseApp.userInfo);
-                intent.putExtra(ConstantEntiy.INTENT_BIND,true);
-                startActivity(intent);
-
+                startActivity(FingerActivity.startIntent(PetiyaakInfoActivity.this,info,BaseApp.userInfo,true));
             }
         });
 
