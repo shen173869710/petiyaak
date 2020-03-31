@@ -93,7 +93,10 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         mAdapter = new ShareListAdapter(userInfos, false);
         infoList.setAdapter(mAdapter);
 
-        mPresenter.getUserListByDeviceId(2,true);
+        if (info.getDeviceId() > 0 ) {
+            mPresenter.getUserListByDeviceId(info.getDeviceId(),true);
+        }
+
     }
 
     @Override

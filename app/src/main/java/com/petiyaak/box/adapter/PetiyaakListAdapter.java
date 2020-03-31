@@ -14,17 +14,17 @@ public class PetiyaakListAdapter extends BaseMultiItemQuickAdapter<PetiyaakBoxIn
 
     public PetiyaakListAdapter(List data) {
         super(data);
-        addItemType(0, R.layout.petiyaak_item_0);
-        addItemType(1, R.layout.petiyaak_item_1);
+        addItemType(-1, R.layout.petiyaak_item_0);
+        addItemType(0, R.layout.petiyaak_item_1);
 
     }
 
     @Override
     protected void convert(@NonNull BaseViewHolder helper, PetiyaakBoxInfo item) {
         switch (helper.getItemViewType()) {
-            case 0:
+            case -1:
                 break;
-            case 1:
+            case 0:
                 helper.setText(R.id.petiyaak_item_name,item.getDeviceName());
                 if (item.isItemBlueStatus()) {
                     helper.getView(R.id.petiyaak_blue_layout).setVisibility(View.VISIBLE);

@@ -1,7 +1,6 @@
 package com.petiyaak.box.model.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-
 import java.io.Serializable;
 
 /**
@@ -32,7 +31,7 @@ public class PetiyaakBoxInfo implements MultiItemEntity, Serializable {
     private int rightMiddle;
     private int rightRing;
     private int rightLittle;
-    private int type = 1;
+    private int type;
 
 
     public PetiyaakBoxInfo(int type) {

@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.constant.ConstantEntiy;
@@ -28,7 +27,6 @@ import com.petiyaak.box.view.IFingerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.functions.Consumer;
 
 public class FingerActivity extends BaseActivity<FingerPresenter> implements IFingerView {
     @BindView(R.id.main_title_back)
@@ -223,7 +221,14 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         new FingerDialog(FingerActivity.this, new OnDialogClick() {
             @Override
             public void onDialogOkClick(String value) {
-                mPresenter.addFingerprints(userInfo.getId(), 2, postion, 100+postion, 2);;
+                int isOwner = 0;
+                if (isBind) {
+                    isOwner = 1;
+                }else {
+                    isOwner = 2;
+                }
+
+                mPresenter.addFingerprints(userInfo.getId(), info.getDeviceId(), postion, 100+postion, isOwner);;
             }
 
             @Override
@@ -413,9 +418,9 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 break;
             case R.id.share_submit:
                 if (isBind) {
-                    mPresenter.addFingerprints(userInfo.getId(), 2, postion, postion, 1);
+                    mPresenter.addFingerprints(userInfo.getId(), info.getDeviceId(), postion, postion, 1);
                 } else {
-                    mPresenter.shareToUser(userInfo.getId(), 2);
+                    mPresenter.shareToUser(userInfo.getId(), info.getDeviceId());
                 }
                 break;
 

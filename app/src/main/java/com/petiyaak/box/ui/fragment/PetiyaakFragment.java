@@ -73,7 +73,7 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
         title.setText(R.string.main_tab_1);
         petiyaakList.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
         petiyaakList.addItemDecoration(new SpacesItemDecoration(40));
-        infos.add(new PetiyaakBoxInfo(0));
+        infos.add(new PetiyaakBoxInfo(-1));
         mAdapter = new PetiyaakListAdapter(infos);
         petiyaakList.setAdapter(mAdapter);
         mPresenter.getOwnerFingerprintsList(true);
@@ -93,7 +93,7 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
                     DialogUtil.addPetiyaak(mContext,new OnDialogClick() {
                         @Override
                         public void onDialogOkClick(String value) {
-                            PetiyaakBoxInfo info = new PetiyaakBoxInfo(1);
+                            PetiyaakBoxInfo info = new PetiyaakBoxInfo(0);
                             info.setDeviceName(value);
                             infos.add(info);
                             mAdapter.notifyDataSetChanged();
@@ -158,7 +158,7 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
         List<PetiyaakBoxInfo> list = (List<PetiyaakBoxInfo>)respone.data;
         if (list != null && list.size() > 0) {
             infos.clear();
-            infos.add(new PetiyaakBoxInfo(0));
+            infos.add(new PetiyaakBoxInfo(-1));
             infos.addAll(list);
 
             mAdapter.notifyDataSetChanged();

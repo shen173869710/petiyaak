@@ -1,6 +1,5 @@
 package com.petiyaak.box.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +16,10 @@ import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.ShareDeviceListAdapter;
 import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.base.BaseFragment;
-import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.ShareListPresenter;
 import com.petiyaak.box.ui.activity.FingerActivity;
-import com.petiyaak.box.ui.activity.OptionActivity;
-import com.petiyaak.box.ui.activity.ShareActivity;
 import com.petiyaak.box.view.IShareListView;
 
 import java.util.ArrayList;
@@ -81,7 +77,7 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
 
     @Override
     protected void initData() {
-        mPresenter.getCanUseredFingerprintsList();
+//        mPresenter.getCanUseredFingerprintsList();
     }
 
     @Override

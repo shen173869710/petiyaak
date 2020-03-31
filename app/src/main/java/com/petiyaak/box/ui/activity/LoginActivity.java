@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.base.BaseApp;
-import com.petiyaak.box.customview.FingerDialog;
 import com.petiyaak.box.customview.MClearEditText;
 import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
@@ -57,9 +56,7 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
                     return;
                 }
                 String name = loginName.getText().toString().trim();
-                name = "111111";
                 String pwd = loginPwd.getText().toString().trim();
-                pwd = "123456";
                 if (TextUtils.isEmpty(name)) {
                     ToastUtils.showToast(getString(R.string.empty_name));
                     return;
@@ -77,9 +74,7 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
         loginRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                FingerDialog dialog = new FingerDialog(LoginActivity.this);
-                dialog.show();
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
     }
