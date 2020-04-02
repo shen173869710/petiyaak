@@ -66,7 +66,7 @@ public class PetiyaakInfoPresenter extends BasePresenter<IPetiyaakInfoView>{
                 new HttpManager.OnResultListener() {
                     @Override
                     public void onSuccess(BaseRespone respone) {
-                        if (respone != null && respone.isOk() && null !=respone.getData()) {
+                        if (respone != null && respone.isOk()) {
                             getBaseView().cancleSuccess(respone);
                         }else{
                             getBaseView().cancleFail(null,-1, respone.getMessage());

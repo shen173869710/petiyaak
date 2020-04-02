@@ -37,7 +37,6 @@
             android:inputType="textPassword"
             android:textSize="14sp"
             app:mClearEditText_bottomLineWidth="1dp"
-            app:mClearEditText_disableClear="false"
             app:mClearEditText_rightDrawableSize="20dp"
             android:maxLength="16"
             android:singleLine="true"

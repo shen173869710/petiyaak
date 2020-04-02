@@ -222,7 +222,7 @@ Observable<BaseRespone<BindDeviceRespone>> bindDevice(@FieldMap Map<String, Obje
  */
 @FormUrlEncoded
 @POST("/api/device/addFingerprints")
-Observable<BaseRespone<LoginRespone>> addFingerprints(@FieldMap Map<String, Object> map);
+Observable<BaseRespone<PetiyaakBoxInfo>> addFingerprints(@FieldMap Map<String, Object> map);
 /**
  * 8、分享设备给用户接口
  *     地址：http://52.177.190.126:8081/api/device/shareDevice

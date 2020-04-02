@@ -2,6 +2,7 @@ package com.petiyaak.box.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 
@@ -18,6 +19,7 @@ import com.petiyaak.box.ui.fragment.HistoryFragment;
 import com.petiyaak.box.ui.fragment.PetiyaakFragment;
 import com.petiyaak.box.ui.fragment.SettingFragment;
 import com.petiyaak.box.ui.fragment.SharedFragment;
+import com.petiyaak.box.util.ToastUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -149,4 +151,22 @@ public class MainActivity extends BaseActivity {
         BleManager.getInstance().disconnectAllDevice();
         BleManager.getInstance().destroy();
     }
+
+    private long firstTime=0;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK && event.getAction()==KeyEvent.ACTION_DOWN){
+            if (System.currentTimeMillis()-firstTime>2000){
+                ToastUtils.showToast("Press again to exit the program");
+                firstTime=System.currentTimeMillis();
+            }else{
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }

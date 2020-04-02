@@ -71,6 +71,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     List<UserInfo> userInfos = new ArrayList<>();
     private ShareListAdapter mAdapter;
 
+    private int cuttentPostion;
     @Override
     protected int getContentView() {
         return R.layout.activity_petiyaak_info;
@@ -152,7 +153,8 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                     DialogUtil.cancleToUser(PetiyaakInfoActivity.this, userInfo.getUsername(), new OnDialogClick() {
                         @Override
                         public void onDialogOkClick(String value) {
-                            mPresenter.cancelShareDevice(userInfo.getId(), 2);
+                            cuttentPostion = position;
+                            mPresenter.cancelShareDevice(userInfo.getId(), info.getDeviceId());
 
                         }
 
@@ -188,7 +190,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShareSucessEvent(ShareSucessEvent event) {
-        mPresenter.getUserListByDeviceId(2,false);
+        mPresenter.getUserListByDeviceId(info.getDeviceId(),false);
     }
 
     @Override
@@ -208,12 +210,21 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
 
     @Override
     public void cancleSuccess(BaseRespone respone) {
-        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
-        if (boxInfo != null) {
-            userInfos.remove(0) ;
-            mAdapter.notifyDataSetChanged();
-            ToastUtils.showToast("cancle success");
+
+        if (respone.isOk()) {
+            int size = userInfos.size();
+            if (size > cuttentPostion) {
+                userInfos.remove(cuttentPostion);
+                mAdapter.notifyDataSetChanged();
+                ToastUtils.showToast("cancle success");
+            }
         }
+//        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
+//        if (boxInfo != null) {
+//            userInfos.remove(0) ;
+//            mAdapter.notifyDataSetChanged();
+//
+//        }
     }
 
     @Override

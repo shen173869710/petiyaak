@@ -14,12 +14,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.ShareDeviceListAdapter;
-import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.base.BaseFragment;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.ShareListPresenter;
-import com.petiyaak.box.ui.activity.FingerActivity;
+import com.petiyaak.box.ui.activity.OptionActivity;
 import com.petiyaak.box.view.IShareListView;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.share_submit) {
-                    startActivity(FingerActivity.startIntent(getActivity(),infos.get(position), BaseApp.userInfo,false));
+                    startActivity(OptionActivity.startIntent(getActivity(),infos.get(position)));
                 }
             }
         });
@@ -77,7 +76,7 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
 
     @Override
     protected void initData() {
-//        mPresenter.getCanUseredFingerprintsList();
+        mPresenter.getCanUseredFingerprintsList();
     }
 
     @Override
@@ -103,15 +102,9 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
     public void success(BaseRespone respone) {
         List<PetiyaakBoxInfo>list = (List<PetiyaakBoxInfo>) respone.data;
         if (list != null && list.size() > 0) {
-            infos.addAll(list);
-        }else {
             infos.clear();
-            for (int i = 0; i < 15; i++) {
-                PetiyaakBoxInfo info = new PetiyaakBoxInfo(1);
-                info.setDeviceName("name"+i);
-                info.setBluetoothName("blue"+i);
-                infos.add(info);
-            }
+            infos.addAll(list);
+            mAdapter.notifyDataSetChanged();
         }
     }
 

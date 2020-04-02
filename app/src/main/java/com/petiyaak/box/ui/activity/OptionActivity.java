@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
+import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.SharePresenter;
 import com.petiyaak.box.util.LogUtils;
@@ -62,6 +65,14 @@ public class OptionActivity extends BaseActivity <SharePresenter> implements ISh
     String readUuid = "";
     String writeUuid = "";
     String serverId = "";
+
+
+    public static Intent startIntent(Context content, PetiyaakBoxInfo box) {
+        Intent intent = new Intent(content, FingerActivity.class);
+        intent.putExtra(ConstantEntiy.INTENT_BOX, box);
+        return intent;
+    }
+
     @Override
     protected int getContentView() {
         return R.layout.activity_option;
@@ -71,7 +82,7 @@ public class OptionActivity extends BaseActivity <SharePresenter> implements ISh
     @Override
     public void initData() {
         mainTitleBack.setVisibility(View.VISIBLE);
-        mainTitleTitle.setText("setting");
+        mainTitleTitle.setText("option box");
         RxView.clicks(mainTitleBack).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {

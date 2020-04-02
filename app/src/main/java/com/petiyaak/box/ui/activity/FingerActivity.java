@@ -3,7 +3,6 @@ package com.petiyaak.box.ui.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,16 +15,19 @@ import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.FingerDialog;
 import com.petiyaak.box.customview.OnDialogClick;
+import com.petiyaak.box.event.ShareSucessEvent;
 import com.petiyaak.box.model.bean.FingerInfo;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.FingerPresenter;
 import com.petiyaak.box.util.NoFastClickUtils;
+import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IFingerView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class FingerActivity extends BaseActivity<FingerPresenter> implements IFingerView {
@@ -124,7 +126,7 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         if (isBind) {
             shareSubmit.setText("Bind Finger");
         }
-        mPresenter.getFingerprints(userInfo.getId(), 2);
+        mPresenter.getFingerprints(userInfo.getId(), info.getDeviceId());
     }
 
     private void initFinger() {
@@ -184,7 +186,11 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
 
     @Override
     public void addFingerSuccess(BaseRespone respone) {
-
+        PetiyaakBoxInfo responeData = (PetiyaakBoxInfo) respone.getData();
+        if (responeData != null) {
+            info = responeData;
+            initFinger();
+        }
     }
 
     @Override
@@ -208,7 +214,11 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
 
     @Override
     public void shareSuccess(BaseRespone respone) {
-
+        if (respone.isOk()) {
+            EventBus.getDefault().post(new ShareSucessEvent());
+            ToastUtils.showToast("share success ");
+            finish();
+        }
     }
 
     @Override
@@ -389,12 +399,6 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         imageView.setBackgroundResource(resId);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 
     @OnClick({R.id.main_title_back,R.id.user_left, R.id.user_right,
             R.id.user_finger_1, R.id.user_finger_2, R.id.user_finger_3,

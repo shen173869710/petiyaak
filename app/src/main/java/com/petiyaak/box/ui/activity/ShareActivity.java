@@ -25,6 +25,7 @@ import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IShareView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,7 +44,6 @@ public class ShareActivity extends BaseActivity<SharePresenter> implements IShar
     private ShareListAdapter mAdapter;
 
     private PetiyaakBoxInfo info;
-
     @Override
     protected int getContentView() {
         return R.layout.activity_share;
@@ -84,7 +84,13 @@ public class ShareActivity extends BaseActivity<SharePresenter> implements IShar
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.share_submit) {
-                    startActivity(FingerActivity.startIntent(ShareActivity.this,info,userInfos.get(position),false));
+                    PetiyaakBoxInfo shareInfo = new PetiyaakBoxInfo(1);
+                    shareInfo.setDeviceId(info.getDeviceId());
+                    shareInfo.setDeviceName(info.getDeviceName());
+                    shareInfo.setBluetoothName(info.getBluetoothName());
+                    shareInfo.setBluetoothMac(info.getBluetoothMac());
+                    shareInfo.setBluetoothPwd(info.getBluetoothPwd());
+                    startActivity(FingerActivity.startIntent(ShareActivity.this,shareInfo,userInfos.get(position),false));
                     finish();
                 }
             }
@@ -100,7 +106,16 @@ public class ShareActivity extends BaseActivity<SharePresenter> implements IShar
     @Override
     public void success(BaseRespone respone) {
         List<UserInfo> list = (List<UserInfo>)respone.getData();
-        if (list.size() > 0) {
+        int size = list.size();
+        if (size > 0) {
+            Iterator<UserInfo> it = list.iterator();
+            while (it.hasNext()){
+                int id = BaseApp.userInfo.getId();
+                UserInfo user = it.next();
+                if (id == user.getId()) {
+                    it.remove();
+                }
+            }
             userInfos.clear();
             userInfos.addAll(list);
             mAdapter.notifyDataSetChanged();
