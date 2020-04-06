@@ -19,8 +19,8 @@ import com.petiyaak.box.base.BaseFragment;
 import com.petiyaak.box.model.bean.SettingItem;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.model.respone.VersionRespone;
-import com.petiyaak.box.presenter.SharePresenter;
-import com.petiyaak.box.view.IShareView;
+import com.petiyaak.box.presenter.CommonPresenter;
+import com.petiyaak.box.view.ICommonView;
 
 import java.util.ArrayList;
 
@@ -29,7 +29,7 @@ import butterknife.BindView;
  * Created by chenzhaolin on 2019/7/10.
  */
 
-public class SettingFragment extends BaseFragment <SharePresenter> implements IShareView {
+public class SettingFragment extends BaseFragment <CommonPresenter> implements ICommonView {
 
     @BindView(R.id.setting_list)
     RecyclerView settingList;
@@ -60,8 +60,8 @@ public class SettingFragment extends BaseFragment <SharePresenter> implements IS
 
 
     @Override
-    protected SharePresenter createPresenter() {
-        return new SharePresenter();
+    protected CommonPresenter createPresenter() {
+        return new CommonPresenter();
     }
 
     @Override

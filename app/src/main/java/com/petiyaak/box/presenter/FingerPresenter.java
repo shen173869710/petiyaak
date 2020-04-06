@@ -1,6 +1,7 @@
 package com.petiyaak.box.presenter;
 
 import com.petiyaak.box.api.HttpManager;
+import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.view.IFingerView;
 
@@ -36,7 +37,14 @@ public class FingerPresenter extends BasePresenter<IFingerView>{
     /**
      *    给用户添加指纹
      */
-    public void addFingerprints(int userId, int deviceId, int postion,int fingerId,int isOwner) {
+    public void addFingerprints(int userId, int deviceId, int postion,int fingerId,boolean bind) {
+
+        int isOwner = 0;
+        if (bind) {
+            isOwner = 1;
+        }else {
+            isOwner = 2;
+        }
         TreeMap<String, Object> treeMap = new TreeMap<>();
         treeMap.put("userId",userId);
         treeMap.put("deviceId",deviceId);
@@ -87,43 +95,6 @@ public class FingerPresenter extends BasePresenter<IFingerView>{
                     @Override
                     public void onError(Throwable error, Integer code,String msg) {
                         getBaseView().addFingerFail(error,code, msg);
-                    }
-                });
-    }
-
-    /**
-     *    分享设备给用户
-     */
-    public void shareToUser(int userId, int deviceId) {
-        TreeMap<String, Object> treeMap = new TreeMap<>();
-        treeMap.put("userId",userId);
-        treeMap.put("deviceId",deviceId);
-        treeMap.put("leftThumb",1);
-        treeMap.put("leftIndex",2);
-        treeMap.put("leftMiddle",3);
-        treeMap.put("leftRing",4);
-        treeMap.put("leftLittle",5);
-
-        treeMap.put("rightThumb",6);
-        treeMap.put("rightIndex",7);
-        treeMap.put("rightMiddle",8);
-        treeMap.put("rightRing",9);
-        treeMap.put("rightLittle",10);
-        treeMap.put("isOwner",2);
-        doHttpTask(getApiService().shareDevice(treeMap),
-                new HttpManager.OnResultListener() {
-                    @Override
-                    public void onSuccess(BaseRespone respone) {
-                        if (respone != null && respone.isOk() && null !=respone.getData()) {
-                            getBaseView().shareSuccess(respone);
-                        }else{
-                            getBaseView().shareFail(null,-1, respone.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable error, Integer code,String msg) {
-                        getBaseView().shareFail(error,code, msg);
                     }
                 });
     }

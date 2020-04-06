@@ -10,15 +10,17 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import com.petiyaak.box.R;
+import com.white.progressview.CircleProgressView;
 
 public class FingerDialog extends Dialog {
 
     private OnDialogClick mOnDialogClick;
+    private CircleProgressView progressView;
+
     public FingerDialog(Context context,OnDialogClick onDialogClick) {
         super(context);
         mOnDialogClick = onDialogClick;
     }
-
 
     public FingerDialog(Context context) {
         super(context);
@@ -43,15 +45,22 @@ public class FingerDialog extends Dialog {
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.BOTTOM;
         onWindowAttributesChanged(params);
+        progressView = findViewById(R.id.finger_progress);
 
-        findViewById(R.id.finger_progress).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnDialogClick.onDialogOkClick(null);
-                dismiss();
-            }
-        });
     }
 
+    public CircleProgressView getProgressView() {
+        return progressView;
+    }
+
+    public void setProgressView(CircleProgressView progressView) {
+        this.progressView = progressView;
+    }
+
+    public void setProgress(int progress) {
+        if (progressView != null) {
+            progressView.setProgress(progress);
+        }
+    }
 
 }

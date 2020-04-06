@@ -16,23 +16,4 @@
             android:id="@+id/uesr_info_layout"
             layout="@layout/user_list_item"></include>
     </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="20dp"
-        >
-    <TextView
-        android:id="@+id/share_submit"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/login_button_sel"
-        android:layout_alignParentBottom="true"
-        android:text="share"
-        android:textSize="@dimen/size_18"
-        android:gravity="center"
-        android:textColor="@color/white" />
-    </RelativeLayout>
 </LinearLayout>

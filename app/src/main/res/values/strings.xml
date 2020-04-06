@@ -49,4 +49,16 @@
 
     <string name="empty_pwd">password is not empty</string>
     <string name="empty_name">userName is not empty</string>
+
+
+    <string name="bind_bluetooth">Bind Bluetooth</string>
+
+    <string name="atfae_fail1">atfae fail1</string>
+    <string name="atfae_fail2">atfae fail2</string>
+    <string name="atfae_fail3">atfae fail3</string>
+    <string name="atfae_fail4">atfae fail4</string>
+
+
+    public static final String ATFAE = "ATFAE";
+
 </resources>

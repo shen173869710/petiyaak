@@ -3,7 +3,6 @@ package com.petiyaak.box.presenter;
 import com.petiyaak.box.api.HttpManager;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.view.IPetiyaakInfoView;
-import com.petiyaak.box.view.IShareView;
 
 import java.util.TreeMap;
 
