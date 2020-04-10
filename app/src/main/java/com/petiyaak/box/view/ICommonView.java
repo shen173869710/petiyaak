@@ -1,6 +1,4 @@
 package com.petiyaak.box.view;
-
-
 import com.petiyaak.box.model.respone.BaseRespone;
 
 /**
@@ -8,7 +6,7 @@ import com.petiyaak.box.model.respone.BaseRespone;
  * 获取用户列表
  */
 
-public interface IShareView extends BaseView{
+public interface ICommonView extends BaseView{
     void success(BaseRespone respone);
     void fail(Throwable error, Integer code, String msg);
 

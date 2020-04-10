@@ -9,8 +9,6 @@ import android.widget.RadioGroup;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.clj.fastble.BleManager;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
@@ -20,16 +18,12 @@ import com.petiyaak.box.ui.fragment.PetiyaakFragment;
 import com.petiyaak.box.ui.fragment.SettingFragment;
 import com.petiyaak.box.ui.fragment.SharedFragment;
 import com.petiyaak.box.util.ToastUtils;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 /**
  * Created by chenzhaolin on 2019/11/4.
  */

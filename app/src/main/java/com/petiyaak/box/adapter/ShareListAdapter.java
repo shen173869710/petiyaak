@@ -1,5 +1,8 @@
 package com.petiyaak.box.adapter;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.petiyaak.box.R;
@@ -23,10 +26,13 @@ public class ShareListAdapter extends BaseQuickAdapter<UserInfo, BaseViewHolder>
         holder.setText(R.id.share_account, item.getUsername()+"");
         holder.setText(R.id.share_name, item.getPhonenumber()+"");
 
+        TextView share_bind = holder.getView(R.id.share_bind);
         if (isShare) {
             holder.setText(R.id.share_submit, "share");
+            share_bind.setVisibility(View.GONE);
         }else {
-            holder.setText(R.id.share_submit, "cancle share");
+            holder.setText(R.id.share_submit, "cancle");
+            share_bind.setVisibility(View.VISIBLE);
         }
     }
 }

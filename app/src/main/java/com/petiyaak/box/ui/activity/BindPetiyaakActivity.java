@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,19 +35,22 @@ import com.petiyaak.box.adapter.DeviceAdapter;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
+import com.petiyaak.box.event.BindSucessEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.model.respone.BindDeviceRespone;
-import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.presenter.BindPresenter;
+import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IBindView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
@@ -63,11 +67,15 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     RelativeLayout mainTitleRight;
     @BindView(R.id.bluelist)
     RecyclerView bluelist;
+    @BindView(R.id.bind_bluetooth)
+    TextView bindBluetooth;
 
     private List<BleDevice> data = new ArrayList<>();
     private DeviceAdapter mDeviceAdapter;
-
     private PetiyaakBoxInfo info;
+
+    private String bluetoothName;
+    private String bluetoothMac;
 
     @Override
     protected int getContentView() {
@@ -128,12 +136,22 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
         RxView.clicks(mainTitleRight).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-//                checkPermissions();
-                String deviceName =info.getDeviceName() ;
-                String bluetoothName = System.currentTimeMillis()+"";
-                String bluetoothMac = System.currentTimeMillis()+"mac";
-                int deviceOwnerId = BaseApp.userInfo.getId();
-                mPresenter.bindDeviced(deviceName, bluetoothName, bluetoothMac, deviceOwnerId);
+                checkPermissions();
+            }
+        });
+
+        bindBluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+
+                if(TextUtils.isEmpty(bluetoothMac) || TextUtils.isEmpty(bluetoothName)){
+                    ToastUtils.showToast("Please connect buletooth");
+                    return;
+                }
+                mPresenter.bindDeviced(info.getDeviceName(), bluetoothName, bluetoothMac, BaseApp.userInfo.getId());
             }
         });
     }
@@ -269,9 +287,8 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 dismissDialog();
-                info.setBluetoothName(bleDevice.getName()+"");
-                info.setItemBlueStatus(true);
-                EventBus.getDefault().post(info);
+                bluetoothName = bleDevice.getName();
+                bluetoothMac = bleDevice.getMac();
                 mDeviceAdapter.addDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
                 bluelist.scrollToPosition(0);
@@ -280,12 +297,8 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
                 dismissDialog();
-                info.setDeviceName("");
-                info.setItemBlueStatus(false);
-                EventBus.getDefault().post(info);
                 mDeviceAdapter.removeDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
-
                 if (isActiveDisConnected) {
                     Toast.makeText(BindPetiyaakActivity.this, getString(R.string.active_disconnected), Toast.LENGTH_LONG).show();
                 } else {
@@ -297,12 +310,6 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
 
             }
         });
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        BleManager.getInstance().disconnectAllDevice();
-//        BleManager.getInstance().destroy();
     }
 
     @Override
@@ -324,7 +331,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             info.setItemBlueStatus(true);
             info.setBluetoothMac(bRespone.getBluetoothMac());
             info.setDeviceName(bRespone.getDeviceName());
-            EventBus.getDefault().post(info);
+            EventBus.getDefault().post(new BindSucessEvent(info));
             finish();
         }
 

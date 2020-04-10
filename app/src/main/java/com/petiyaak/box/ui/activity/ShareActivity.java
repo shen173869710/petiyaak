@@ -1,6 +1,5 @@
 package com.petiyaak.box.ui.activity;
 
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -17,12 +16,17 @@ import com.petiyaak.box.adapter.ShareListAdapter;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
+import com.petiyaak.box.customview.OnDialogClick;
+import com.petiyaak.box.event.ShareSucessEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
-import com.petiyaak.box.presenter.SharePresenter;
+import com.petiyaak.box.presenter.ShareUserPresenter;
+import com.petiyaak.box.util.DialogUtil;
 import com.petiyaak.box.util.ToastUtils;
-import com.petiyaak.box.view.IShareView;
+import com.petiyaak.box.view.IShareUserView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,7 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class ShareActivity extends BaseActivity<SharePresenter> implements IShareView {
+public class ShareActivity extends BaseActivity<ShareUserPresenter> implements IShareUserView {
 
     @BindView(R.id.share_back)
     ImageView shareBack;
@@ -84,27 +88,41 @@ public class ShareActivity extends BaseActivity<SharePresenter> implements IShar
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.share_submit) {
-                    PetiyaakBoxInfo shareInfo = new PetiyaakBoxInfo(1);
-                    shareInfo.setDeviceId(info.getDeviceId());
-                    shareInfo.setDeviceName(info.getDeviceName());
-                    shareInfo.setBluetoothName(info.getBluetoothName());
-                    shareInfo.setBluetoothMac(info.getBluetoothMac());
-                    shareInfo.setBluetoothPwd(info.getBluetoothPwd());
-                    startActivity(FingerActivity.startIntent(ShareActivity.this,shareInfo,userInfos.get(position),false));
-                    finish();
+                    DialogUtil.shareToUser(ShareActivity.this, userInfos.get(position).getUsername(), new OnDialogClick() {
+                        @Override
+                        public void onDialogOkClick(String value) {
+                            mPresenter.shareToUser(userInfos.get(position).getId(), info);
+                        }
+
+                        @Override
+                        public void onDialogCloseClick(String value) {
+
+                        }
+                    });
                 }
             }
         });
     }
 
     @Override
-    protected SharePresenter createPresenter() {
-        return new SharePresenter();
+    protected ShareUserPresenter createPresenter() {
+        return new ShareUserPresenter();
     }
 
+    @Override
+    public void shareSuccess(BaseRespone respone) {
+        EventBus.getDefault().post(new ShareSucessEvent());
+        ToastUtils.showToast("share success ");
+        finish();
+    }
 
     @Override
-    public void success(BaseRespone respone) {
+    public void shareFail(Throwable error, Integer code, String msg) {
+
+    }
+
+    @Override
+    public void serachSuccess(BaseRespone respone) {
         List<UserInfo> list = (List<UserInfo>)respone.getData();
         int size = list.size();
         if (size > 0) {
@@ -120,11 +138,10 @@ public class ShareActivity extends BaseActivity<SharePresenter> implements IShar
             userInfos.addAll(list);
             mAdapter.notifyDataSetChanged();
         }
-
     }
 
     @Override
-    public void fail(Throwable error, Integer code, String msg) {
-        ToastUtils.showToast(msg+"");
+    public void serachFail(Throwable error, Integer code, String msg) {
+
     }
 }

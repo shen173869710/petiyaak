@@ -29,7 +29,6 @@
                 android:id="@+id/share_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Janahan Gnana opened "
                 android:textColor="@color/button_yellow"
                 android:textSize="@dimen/size_14"></TextView>
 
@@ -37,7 +36,6 @@
                 android:id="@+id/share_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2019/11/11  11:11"
                 android:textColor="@color/black"
                 android:textSize="@dimen/size_14"></TextView>
 
@@ -50,14 +48,28 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/share_bind"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:background="@drawable/login_button_sel"
+            android:text="AddFinger"
+            android:textSize="@dimen/size_12"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="80dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white" />
+
+        <TextView
             android:id="@+id/share_submit"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
             android:background="@drawable/login_button_sel"
             android:text="share"
             android:textSize="@dimen/size_12"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
             android:gravity="center"
             android:textColor="@color/white" />
     </RelativeLayout>

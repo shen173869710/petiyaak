@@ -24,12 +24,11 @@ import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
-import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
-import com.petiyaak.box.presenter.SharePresenter;
+import com.petiyaak.box.presenter.CommonPresenter;
 import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.ToastUtils;
-import com.petiyaak.box.view.IShareView;
+import com.petiyaak.box.view.ICommonView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -43,7 +42,7 @@ import io.reactivex.functions.Consumer;
 /**
  * Created by chenzhaolin on 2019/11/4.
  */
-public class OptionActivity extends BaseActivity <SharePresenter> implements IShareView {
+public class OptionActivity extends BaseActivity <CommonPresenter> implements ICommonView {
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
     @BindView(R.id.main_title_title)
@@ -190,8 +189,8 @@ public class OptionActivity extends BaseActivity <SharePresenter> implements ISh
     }
 
     @Override
-    protected SharePresenter createPresenter() {
-        return new SharePresenter();
+    protected CommonPresenter createPresenter() {
+        return new CommonPresenter();
     }
 
     @Override
@@ -245,7 +244,7 @@ public class OptionActivity extends BaseActivity <SharePresenter> implements ISh
     public void success(BaseRespone respone) {
         PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
         if (boxInfo != null) {
-            ToastUtils.showToast("success");
+            ToastUtils.showToast("BaseRespone success");
         }
     }
 

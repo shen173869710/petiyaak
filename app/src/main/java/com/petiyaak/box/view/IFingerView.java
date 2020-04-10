@@ -21,11 +21,4 @@ public interface IFingerView extends BaseView{
     void getFingerSuccess(BaseRespone respone);
     void getFingerFail(Throwable error, Integer code, String msg);
 
-    /**
-     *        分享指纹给用户
-     * @param respone
-     */
-    void shareSuccess(BaseRespone respone);
-    void shareFail(Throwable error, Integer code, String msg);
-
 }

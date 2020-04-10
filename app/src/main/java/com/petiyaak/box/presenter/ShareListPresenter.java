@@ -1,6 +1,5 @@
 package com.petiyaak.box.presenter;
 
-
 import com.petiyaak.box.api.HttpManager;
 import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.model.respone.BaseRespone;

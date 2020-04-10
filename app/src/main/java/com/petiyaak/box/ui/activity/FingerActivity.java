@@ -9,28 +9,36 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import com.clj.fastble.data.BleDevice;
+import com.inuker.bluetooth.library.BluetoothClient;
+import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
+import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
+import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
+import com.inuker.bluetooth.library.model.BleGattCharacter;
+import com.inuker.bluetooth.library.model.BleGattProfile;
+import com.inuker.bluetooth.library.model.BleGattService;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.FingerDialog;
 import com.petiyaak.box.customview.OnDialogClick;
-import com.petiyaak.box.event.ShareSucessEvent;
 import com.petiyaak.box.model.bean.FingerInfo;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.FingerPresenter;
+import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IFingerView;
-
-import org.greenrobot.eventbus.EventBus;
-
+import java.util.UUID;
 import butterknife.BindView;
 import butterknife.OnClick;
+import static com.inuker.bluetooth.library.Constants.REQUEST_SUCCESS;
 
 public class FingerActivity extends BaseActivity<FingerPresenter> implements IFingerView {
+    private final String TAG = "FingerActivity";
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
     @BindView(R.id.main_title_title)
@@ -87,14 +95,24 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
     @BindView(R.id.user_finger_5_id)
     TextView userFinger5Id;
 
-    @BindView(R.id.share_submit)
-    TextView shareSubmit;
     private FingerInfo fingerInfo;
     PetiyaakBoxInfo info;
     UserInfo userInfo;
     boolean isBind;
     private int postion = 0;
 
+    BleDevice device;
+    UUID readUuid;
+    UUID writeUuid;
+    UUID serverId;
+
+    FingerDialog dialog;
+    BluetoothClient mClient;
+
+    /**
+     *  当前的指纹ID
+     */
+    private int currentId;
 
     public static Intent startIntent(Context content, PetiyaakBoxInfo box, UserInfo info, boolean isBind) {
         Intent intent = new Intent(content, FingerActivity.class);
@@ -114,7 +132,7 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
     public void initData() {
         fingerInfo = new FingerInfo();
         fingerInfo.leftFinger = true;
-        mainTitleTitle.setText("Scan Finger");
+        mainTitleTitle.setText("Bind Finger");
         uesrItemName.setText(fingerInfo.userName);
         mainTitleBack.setVisibility(View.VISIBLE);
 
@@ -122,9 +140,22 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         userInfo = (UserInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_USER);
         isBind = getIntent().getBooleanExtra(ConstantEntiy.INTENT_BIND, false);
         initFinger();
-
-        if (isBind) {
-            shareSubmit.setText("Bind Finger");
+        mClient = new BluetoothClient(this);
+        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+            BleConnectOptions options = new BleConnectOptions.Builder()
+                    .setConnectRetry(3)   // 连接如果失败重试3次
+                    .setConnectTimeout(30000)   // 连接超时30s
+                    .setServiceDiscoverRetry(3)  // 发现服务如果失败重试3次
+                    .setServiceDiscoverTimeout(20000)  // 发现服务超时20s
+                    .build();
+            mClient.connect(info.getBluetoothMac(), options, new BleConnectResponse() {
+                @Override
+                public void onResponse(int code, BleGattProfile profile) {
+                    if (code == REQUEST_SUCCESS) {
+                        initUUID(profile);
+                    }
+                }
+            });
         }
         mPresenter.getFingerprints(userInfo.getId(), info.getDeviceId());
     }
@@ -156,12 +187,139 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
 
     @Override
     public void initListener() {
+        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+            BleConnectOptions options = new BleConnectOptions.Builder()
+                    .setConnectRetry(3)   // 连接如果失败重试3次
+                    .setConnectTimeout(30000)   // 连接超时30s
+                    .setServiceDiscoverRetry(3)  // 发现服务如果失败重试3次
+                    .setServiceDiscoverTimeout(20000)  // 发现服务超时20s
+                    .build();
+            mClient.connect(info.getBluetoothMac(), options, new BleConnectResponse() {
+                @Override
+                public void onResponse(int code, BleGattProfile profile) {
+                    if (code == REQUEST_SUCCESS) {
+                        initUUID(profile);
+                    }
+                }
+            });
+        }
 
+        findViewById(R.id.main_title_title).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                write("ATFDE=999".getBytes());
+            }
+        });
     }
 
     @Override
     protected FingerPresenter createPresenter() {
         return new FingerPresenter();
+    }
+
+
+    /**
+     *  初始化相关id
+     */
+    private void initUUID(BleGattProfile profile) {
+        if (profile != null && profile.getServices() != null) {
+            for (BleGattService bchar : profile.getServices()) {
+                if (bchar != null && bchar.getCharacters() != null && bchar.getUUID() != null) {
+                    for(BleGattCharacter character :    bchar.getCharacters()) {
+                        if (character != null && character.getUuid() != null) {
+                            String uuid = character.getUuid().toString();
+                            if (!TextUtils.isEmpty(uuid) && uuid.contains("fff4")) {
+                                readUuid = character.getUuid();
+                                LogUtils.e(TAG, "readUUid = " + readUuid);
+                                serverId = bchar.getUUID();
+                                LogUtils.e(TAG, "serverId = " + serverId);
+                            }
+                            if (!TextUtils.isEmpty(uuid) && uuid.contains("fff3")) {
+                                writeUuid = character.getUuid();
+                                LogUtils.e(TAG, "writeUuid = " + writeUuid);
+                                serverId = bchar.getUUID();
+                                LogUtils.e(TAG, "serverId = " + serverId);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (serverId != null && readUuid != null) {
+            mClient.notify(info.getBluetoothMac(), serverId, readUuid, new BleNotifyResponse() {
+                @Override
+                public void onNotify(UUID service, UUID character, byte[] value) {
+                    LogUtils.e(TAG, "notify()  "+new String(value));
+                    getRespone(new String(value).trim());
+                }
+
+                @Override
+                public void onResponse(int code) {
+                    LogUtils.e(TAG, "notify onResponse code =  "+code);
+                    if (code == REQUEST_SUCCESS) {
+
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     *     获取指纹的返回值
+     * @param respone
+     */
+    private void getRespone(String respone) {
+        if (TextUtils.isEmpty(respone)) {
+            return;
+        }
+        if (respone.contains(ConstantEntiy.ATFAE)) {
+            if (respone.contains(ConstantEntiy.ATFAE_START)) {
+
+            }else if (respone.contains(ConstantEntiy.ATFAE_FAIL1)) {
+                ToastUtils.showToast(getResources().getString(R.string.atfae_fail1));
+            }else if (respone.contains(ConstantEntiy.ATFAE_FAIL2)) {
+                ToastUtils.showToast(getResources().getString(R.string.atfae_fail2));
+            }else if (respone.contains(ConstantEntiy.ATFAE_FAIL3)) {
+                ToastUtils.showToast(getResources().getString(R.string.atfae_fail3));
+            }else if (respone.contains(ConstantEntiy.ATFAE_FAIL4)) {
+                ToastUtils.showToast(getResources().getString(R.string.atfae_fail4));
+            }else if ((respone.contains(ConstantEntiy.ATFAE_OK))){
+//                ATFAE=OK-30/100
+//                ATFAE=OK-ID=2
+                if (respone.contains("ID") || respone.contains("id")) {
+                    String[] ids = respone.split("=");
+                    if (ids != null && ids.length == 3) {
+                        String id = ids[2];
+                        LogUtils.e(TAG, " id  --"+id);
+                        id = id.replaceAll("\r|\n","");
+                        try {
+                            currentId = Integer.valueOf(id.trim());
+                            if (dialog != null) {
+                                dialog.dismiss();
+                            }
+                            mPresenter.addFingerprints(userInfo.getId(), info.getDeviceId(), postion, currentId, isBind);
+                        }catch (Exception e) {
+                            LogUtils.e(TAG, " id  异常"+e.getMessage());
+                        }
+                    }
+                }else{
+                    String[] ids = respone.split("-");
+                    if (ids != null && ids.length == 2) {
+                        String str = ids[1].substring(0,2);
+                        LogUtils.e(TAG, " 当前进度 --"+str + "   ids[1] ="+ids[1]);
+                        try {
+                            int progress = Integer.valueOf(str);
+                            if (dialog != null) {
+                                dialog.setProgress(progress);
+                            }
+                        }catch (Exception e) {
+
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     @Override
@@ -211,41 +369,27 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
     public void getFingerFail(Throwable error, Integer code, String msg) {
 
     }
-
-    @Override
-    public void shareSuccess(BaseRespone respone) {
-        if (respone.isOk()) {
-            EventBus.getDefault().post(new ShareSucessEvent());
-            ToastUtils.showToast("share success ");
-            finish();
-        }
-    }
-
-    @Override
-    public void shareFail(Throwable error, Integer code, String msg) {
-
-    }
-
-
     private void showFingerDialog() {
-        new FingerDialog(FingerActivity.this, new OnDialogClick() {
+        currentId = 0;
+        dialog = new FingerDialog(FingerActivity.this, new OnDialogClick() {
             @Override
             public void onDialogOkClick(String value) {
-                int isOwner = 0;
-                if (isBind) {
-                    isOwner = 1;
-                }else {
-                    isOwner = 2;
-                }
 
-                mPresenter.addFingerprints(userInfo.getId(), info.getDeviceId(), postion, 100+postion, isOwner);;
             }
 
             @Override
             public void onDialogCloseClick(String value) {
 
             }
-        }).show();
+        });
+
+        if (dialog != null) {
+            dialog.show();
+            /**
+             *  开始注册指纹
+             */
+            write(ConstantEntiy.ATFAE.getBytes());
+        }
     }
 
     /**
@@ -258,7 +402,7 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         int fingerId = 0;
 
         if (fingerInfo.leftFinger) {
-            if (info.getLeftThumb() > 0) {
+            if (info.getLeftThumb() >= 0) {
                 imageView = userFinger1;
                 resId = R.mipmap.finger_p;
                 textView = userFinger1Id;
@@ -267,10 +411,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger1;
                 resId = R.mipmap.finger_n;
                 textView = userFinger1Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getLeftIndex() > 0) {
+            if (info.getLeftIndex() >= 0) {
                 imageView = userFinger2;
                 resId = R.mipmap.finger_p;
                 textView = userFinger2Id;
@@ -279,10 +423,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger2;
                 resId = R.mipmap.finger_n;
                 textView = userFinger2Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getLeftMiddle() > 0) {
+            if (info.getLeftMiddle() >= 0) {
                 imageView = userFinger3;
                 resId = R.mipmap.finger_p;
                 textView = userFinger3Id;
@@ -291,10 +435,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger3;
                 resId = R.mipmap.finger_n;
                 textView = userFinger3Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getLeftRing() > 0) {
+            if (info.getLeftRing() >= 0) {
                 imageView = userFinger4;
                 resId = R.mipmap.finger_p;
                 textView = userFinger4Id;
@@ -303,10 +447,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger4;
                 resId = R.mipmap.finger_n;
                 textView = userFinger4Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getLeftLittle() > 0) {
+            if (info.getLeftLittle() >= 0) {
                 imageView = userFinger5;
                 resId = R.mipmap.finger_p;
                 textView = userFinger5Id;
@@ -315,11 +459,11 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger5;
                 resId = R.mipmap.finger_n;
                 textView = userFinger5Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
         } else {
-            if (info.getRightThumb() > 0) {
+            if (info.getRightThumb() >= 0) {
                 imageView = userFinger1;
                 resId = R.mipmap.finger_p;
                 textView = userFinger1Id;
@@ -328,10 +472,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger1;
                 resId = R.mipmap.finger_n;
                 textView = userFinger1Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getRightIndex() > 0) {
+            if (info.getRightIndex() >= 0) {
                 imageView = userFinger2;
                 resId = R.mipmap.finger_p;
                 textView = userFinger2Id;
@@ -340,10 +484,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger2;
                 resId = R.mipmap.finger_n;
                 textView = userFinger2Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getRightMiddle() > 0) {
+            if (info.getRightMiddle() >= 0) {
                 imageView = userFinger3;
                 resId = R.mipmap.finger_p;
                 textView = userFinger3Id;
@@ -352,10 +496,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger3;
                 resId = R.mipmap.finger_n;
                 textView = userFinger3Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getRightRing() > 0) {
+            if (info.getRightRing() >= 0) {
                 imageView = userFinger4;
                 resId = R.mipmap.finger_p;
                 textView = userFinger4Id;
@@ -364,10 +508,10 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger4;
                 resId = R.mipmap.finger_n;
                 textView = userFinger4Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
-            if (info.getRightLittle() > 0) {
+            if (info.getRightLittle() >= 0) {
                 imageView = userFinger5;
                 resId = R.mipmap.finger_p;
                 textView = userFinger5Id;
@@ -376,7 +520,7 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 imageView = userFinger5;
                 resId = R.mipmap.finger_n;
                 textView = userFinger5Id;
-                fingerId = 0;
+                fingerId = -1;
             }
             fingerSel(imageView, resId, textView, fingerId);
         }
@@ -391,7 +535,7 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
      * @param fingerId
      */
     public void fingerSel(ImageView imageView, int resId, TextView textView, int fingerId) {
-        if (fingerId > 0) {
+        if (fingerId >= 0) {
             textView.setText("" + fingerId);
         } else {
             textView.setText("");
@@ -400,9 +544,9 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
     }
 
 
-    @OnClick({R.id.main_title_back,R.id.user_left, R.id.user_right,
+    @OnClick({R.id.main_title_back, R.id.user_left, R.id.user_right,
             R.id.user_finger_1, R.id.user_finger_2, R.id.user_finger_3,
-            R.id.user_finger_4, R.id.user_finger_5, R.id.share_submit})
+            R.id.user_finger_4, R.id.user_finger_5})
     public void onClick(View view) {
 
         if (NoFastClickUtils.isFastClick()) {
@@ -420,14 +564,6 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 fingerInfo.leftFinger = false;
                 initFinger();
                 break;
-            case R.id.share_submit:
-                if (isBind) {
-                    mPresenter.addFingerprints(userInfo.getId(), info.getDeviceId(), postion, postion, 1);
-                } else {
-                    mPresenter.shareToUser(userInfo.getId(), info.getDeviceId());
-                }
-                break;
-
             case R.id.user_finger_1:
                 if (fingerInfo.leftFinger) {
                     postion = 1;
@@ -470,4 +606,19 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 break;
         }
     }
+
+
+    public void write(byte[] value) {
+        if (mClient == null || serverId == null || writeUuid == null) {
+            LogUtils.e(TAG, "write() =  null");
+            return;
+        }
+        mClient.write(info.getBluetoothMac(), serverId, writeUuid, value, new BleWriteResponse() {
+            @Override
+            public void onResponse(int code) {
+                LogUtils.e(TAG, "write -- onResponse code= "+code);
+            }
+        });
+    }
+
 }

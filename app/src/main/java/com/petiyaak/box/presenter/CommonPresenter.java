@@ -1,12 +1,14 @@
 package com.petiyaak.box.presenter;
 
 import com.petiyaak.box.api.HttpManager;
+import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
-import com.petiyaak.box.view.IShareView;
+import com.petiyaak.box.view.ICommonView;
+
 import java.util.TreeMap;
 
 
-public class SharePresenter extends BasePresenter<IShareView>{
+public class CommonPresenter extends BasePresenter<ICommonView>{
 
     /**
      *        查询用户列表
@@ -86,62 +88,30 @@ public class SharePresenter extends BasePresenter<IShareView>{
     }
 
 
-//    /**
-//     *    分享设备给用户
-//     */
-//    public void addFingerprints(int userId, int deviceId, int postion,int fingerId,int isOwner) {
-//        TreeMap<String, Object> treeMap = new TreeMap<>();
-//        treeMap.put("userId",userId);
-//        treeMap.put("deviceId",deviceId);
-//        switch (postion) {
-//            case 1:
-//                treeMap.put("leftThumb",fingerId);
-//                break;
-//            case 2:
-//                treeMap.put("leftIndex",fingerId);
-//                break;
-//            case 3:
-//                treeMap.put("leftMiddle",fingerId);
-//                break;
-//            case 4:
-//                treeMap.put("leftRing",fingerId);
-//                break;
-//            case 5:
-//                treeMap.put("leftLittle",fingerId);
-//                break;
-//            case 6:
-//                treeMap.put("rightThumb",fingerId);
-//                break;
-//            case 7:
-//                treeMap.put("rightIndex",fingerId);
-//                break;
-//            case 8:
-//                treeMap.put("rightMiddle",fingerId);
-//                break;
-//            case 9:
-//                treeMap.put("rightRing",fingerId);
-//                break;
-//            case 10:
-//                treeMap.put("rightLittle",fingerId);
-//                break;
-//        }
-//        treeMap.put("isOwner",isOwner);
-//        doHttpTask(getApiService().addFingerprints(treeMap),
-//                new HttpManager.OnResultListener() {
-//                    @Override
-//                    public void onSuccess(BaseRespone respone) {
-//                        if (respone != null && respone.isOk() && null !=respone.getData()) {
-//                            getBaseView().success(respone);
-//                        }else{
-//                            getBaseView().fail(null,-1, respone.getMessage());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable error, Integer code,String msg) {
-//                        getBaseView().fail(error,code, msg);
-//                    }
-//                });
-//    }
+    /**
+     *    分享设备给用户
+     */
+    public void shareToUser(int userId, PetiyaakBoxInfo info) {
+        TreeMap<String, Object> treeMap = new TreeMap<>();
+        treeMap.put("userId",userId);
+        treeMap.put("deviceId",info.getDeviceId());
+        treeMap.put("isOwner",2);
+        doHttpTask(getApiService().shareDevice(treeMap),
+                new HttpManager.OnResultListener() {
+                    @Override
+                    public void onSuccess(BaseRespone respone) {
+                        if (respone != null && respone.isOk() && null !=respone.getData()) {
+                            getBaseView().success(respone);
+                        }else{
+                            getBaseView().fail(null,-1, respone.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable error, Integer code,String msg) {
+                        getBaseView().fail(error,code, msg);
+                    }
+                });
+    }
 
 }
