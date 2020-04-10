@@ -96,7 +96,6 @@ public class MainActivity extends BaseActivity {
         if (null == fragment) {
             return;
         }
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         String fragmentTag = fragment.getClass().getSimpleName();
         addFragment(fragmentManager, fragment, fragmentTag);

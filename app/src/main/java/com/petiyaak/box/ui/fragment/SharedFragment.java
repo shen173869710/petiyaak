@@ -21,7 +21,6 @@ import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.ShareListPresenter;
 import com.petiyaak.box.ui.activity.FingerActivity;
 import com.petiyaak.box.ui.activity.OptionActivity;
-import com.petiyaak.box.ui.activity.PetiyaakInfoActivity;
 import com.petiyaak.box.view.IShareListView;
 
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
 
     @Override
     protected void initData() {
-        mPresenter.getCanUseredFingerprintsList();
+
     }
 
     @Override
@@ -90,7 +89,9 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
 
     @Override
     public void firstLoad() {
-
+        if (mPresenter != null) {
+            mPresenter.getCanUseredFingerprintsList();
+        }
     }
 
     @Override

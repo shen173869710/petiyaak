@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.petiyaak.box.R;
@@ -21,9 +19,7 @@ import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.model.respone.VersionRespone;
 import com.petiyaak.box.presenter.CommonPresenter;
 import com.petiyaak.box.view.ICommonView;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 /**
  * Created by chenzhaolin on 2019/7/10.
@@ -93,7 +89,7 @@ public class SettingFragment extends BaseFragment <CommonPresenter> implements I
             }
         });
 
-        mPresenter.checkVersion(0);
+
     }
 
     @Override
@@ -124,7 +120,9 @@ public class SettingFragment extends BaseFragment <CommonPresenter> implements I
 
     @Override
     public void firstLoad() {
-
+        if (mPresenter != null) {
+            mPresenter.checkVersion(0);
+        }
     }
 
 

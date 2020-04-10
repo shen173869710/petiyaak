@@ -22,7 +22,8 @@
             android:gravity="center_vertical"
             android:hint="Email Address"
             android:textSize="14sp"
-            android:maxLength="16"
+            android:maxLength="32"
+            android:singleLine="true"
             />
         <com.petiyaak.box.customview.MClearEditText
             android:id="@+id/register_pwd"
@@ -37,7 +38,8 @@
             app:mClearEditText_bottomLineWidth="1dp"
             app:mClearEditText_disableClear="false"
             app:mClearEditText_rightDrawableSize="20dp"
-            android:maxLength="16"
+            android:maxLength="32"
+            android:singleLine="true"
             />
 
         <TextView

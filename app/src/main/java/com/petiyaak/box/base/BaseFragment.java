@@ -18,7 +18,6 @@ import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.annotations.Nullable;
 
 
 /**
@@ -63,26 +62,10 @@ public abstract class BaseFragment<T extends BasePresenter> extends RxFragment i
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        isViewCreate = true;
-    }
-
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        isViewVisible = isVisibleToUser;
-        if (isVisibleToUser && isViewCreate) {
-            visibleToUser();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (isViewVisible) {
-            visibleToUser();
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden) {
+            firstLoad();
         }
     }
 
@@ -93,16 +76,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends RxFragment i
      */
     public abstract void firstLoad();
 
-    /**
-     * 懒加载
-     * 让用户可见
-     */
-    protected void visibleToUser() {
-        if (isFirst) {
-            firstLoad();
-            isFirst = false;
-        }
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

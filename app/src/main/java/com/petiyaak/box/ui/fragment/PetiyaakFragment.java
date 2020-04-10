@@ -160,7 +160,6 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
             infos.clear();
             infos.add(new PetiyaakBoxInfo(-1));
             infos.addAll(list);
-
             mAdapter.notifyDataSetChanged();
         }
     }

@@ -12,7 +12,7 @@ public class ShareListPresenter extends BasePresenter<IShareListView> {
     public void getCanUseredFingerprintsList() {
         TreeMap<String, Object> treeMap = new TreeMap<>();
         treeMap.put("userId", BaseApp.userInfo.getId());
-        doHttpTask(getApiService().getCanUseredFingerprintsList(treeMap),
+        doHttpTaskWihtDialog(getApiService().getCanUseredFingerprintsList(treeMap),
                 new HttpManager.OnResultListener() {
                     @Override
                     public void onSuccess(BaseRespone respone) {
