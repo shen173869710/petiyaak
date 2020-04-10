@@ -32,14 +32,15 @@
         </activity>
 
 
-        <activity android:name=".ui.activity.MainActivity"  android:launchMode="singleTask"/>
-        <activity android:name=".ui.activity.RegisterActivity"  android:launchMode="singleTask"/>
-        <activity android:name=".ui.activity.PetiyaakInfoActivity"  />
-        <activity android:name=".ui.activity.BindFingerActivity"  />
-        <activity android:name=".ui.activity.BindPetiyaakActivity"  />
-        <activity android:name=".ui.activity.FingerActivity"  />
-        <activity android:name=".ui.activity.OptionActivity"  />
-        <activity android:name=".ui.activity.ShareActivity"  />
+        <activity android:name=".ui.activity.MainActivity"  android:launchMode="singleTask"  android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.RegisterActivity"  android:launchMode="singleTask"  android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.PetiyaakInfoActivity"   android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.BindFingerActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.BindPetiyaakActivity"   android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.FingerActivity"   android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.FingerDelActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.OptionActivity"   android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.ShareActivity"  android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -54,29 +54,5 @@ public class PetiyaakInfoPresenter extends BasePresenter<IPetiyaakInfoView>{
     }
 
 
-    /**
-     *    取消分享给用户
-     */
-    public void cancelShareDevice(int userId, int deviceId) {
-        TreeMap<String, Object> treeMap = new TreeMap<>();
-        treeMap.put("userId",userId);
-        treeMap.put("deviceId",deviceId);
-        doHttpTask(getApiService().cancelShareDevice(treeMap),
-                new HttpManager.OnResultListener() {
-                    @Override
-                    public void onSuccess(BaseRespone respone) {
-                        if (respone != null && respone.isOk()) {
-                            getBaseView().cancleSuccess(respone);
-                        }else{
-                            getBaseView().cancleFail(null,-1, respone.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable error, Integer code,String msg) {
-                        getBaseView().cancleFail(error,code, msg);
-                    }
-                });
-    }
 
 }

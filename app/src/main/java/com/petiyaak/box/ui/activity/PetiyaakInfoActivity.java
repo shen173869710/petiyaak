@@ -147,6 +147,11 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         RxView.clicks(infoBlue).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
+
+                if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+                    ToastUtils.showToast("Bluetooth device already bound");
+                    return;
+                }
                 Intent intent = new Intent(PetiyaakInfoActivity.this, BindPetiyaakActivity.class);
                 intent.putExtra(ConstantEntiy.INTENT_BOX, info);
                 startActivity(intent);
@@ -157,6 +162,10 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         RxView.clicks(infoFinger).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
+                if (TextUtils.isEmpty(info.getBluetoothMac())) {
+                    ToastUtils.showToast("No Bluetooth device");
+                    return;
+                }
                 startActivity(FingerActivity.startIntent(PetiyaakInfoActivity.this,info,BaseApp.userInfo,true));
             }
         });
@@ -164,6 +173,10 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         RxView.clicks(infoShare).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
+                if (TextUtils.isEmpty(info.getBluetoothMac())) {
+                    ToastUtils.showToast("No Bluetooth device");
+                    return;
+                }
                 Intent intent = new Intent(PetiyaakInfoActivity.this, ShareActivity.class);
                 intent.putExtra(ConstantEntiy.INTENT_BOX, info);
                 startActivity(intent);
@@ -173,6 +186,10 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         RxView.clicks(infoOption).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
+                if (TextUtils.isEmpty(info.getBluetoothMac())) {
+                    ToastUtils.showToast("No Bluetooth device");
+                    return;
+                }
                 Intent intent = new Intent(PetiyaakInfoActivity.this, OptionActivity.class);
                 intent.putExtra(ConstantEntiy.INTENT_BOX, info);
                 startActivity(intent);
@@ -189,8 +206,8 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                     DialogUtil.cancleToUser(PetiyaakInfoActivity.this, userInfo.getUsername(), new OnDialogClick() {
                         @Override
                         public void onDialogOkClick(String value) {
-                            cuttentPostion = position;
-                            mPresenter.cancelShareDevice(userInfo.getId(), info.getDeviceId());
+                          cuttentPostion = position;
+                          startActivity( FingerDelActivity.startIntent(PetiyaakInfoActivity.this,info,userInfo,false));
                         }
                         @Override
                         public void onDialogCloseClick(String value) {
@@ -252,20 +269,4 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         ToastUtils.showToast(""+msg);
     }
 
-    @Override
-    public void cancleSuccess(BaseRespone respone) {
-        if (respone.isOk()) {
-            int size = userInfos.size();
-            if (size > cuttentPostion) {
-                userInfos.remove(cuttentPostion);
-                mAdapter.notifyDataSetChanged();
-                ToastUtils.showToast("cancle success");
-            }
-        }
-    }
-
-    @Override
-    public void cancleFail(Throwable error, Integer code, String msg) {
-        ToastUtils.showToast(""+msg);
-    }
 }

@@ -62,6 +62,20 @@ public class DialogUtil {
         AddUserDialog.show(context, content, onDialogClick);
     }
 
+
+    /**
+     *   删除一个指纹
+     */
+
+    public static void delFinger(Context context, int  id, OnDialogClick onDialogClick) {
+        DialogContent content = new DialogContent();
+        content.desc = "Delete finger" + id;
+        content.ok = "Ok";
+        content.cancle = "No";
+        content.hideEidt = true;
+        AddUserDialog.show(context, content, onDialogClick);
+    }
+
     /**
      *   添加一个用户
      */
