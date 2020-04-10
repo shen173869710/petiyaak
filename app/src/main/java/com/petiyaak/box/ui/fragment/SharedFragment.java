@@ -19,6 +19,7 @@ import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.ShareListPresenter;
 import com.petiyaak.box.ui.activity.OptionActivity;
+import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.view.IShareListView;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
 
     @Override
     public void firstLoad() {
-
+        LogUtils.e("Fragment", "firstLoad()");
     }
 
     @Override
