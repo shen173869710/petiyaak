@@ -1,5 +1,6 @@
 package com.petiyaak.box.adapter;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -26,12 +27,12 @@ public class PetiyaakListAdapter extends BaseMultiItemQuickAdapter<PetiyaakBoxIn
                 break;
             case 0:
                 helper.setText(R.id.petiyaak_item_name,item.getDeviceName());
-                if (item.isItemBlueStatus()) {
-                    helper.getView(R.id.petiyaak_blue_layout).setVisibility(View.VISIBLE);
-                    helper.setText(R.id.petiyaak_blue_name, item.getBluetoothName());
-                    helper.getView(R.id.petiyaak_blue_status).setBackgroundResource(R.mipmap.ic_blue_remote);
-                }else {
+                if (TextUtils.isEmpty(item.getBluetoothName())) {
                     helper.getView(R.id.petiyaak_blue_layout).setVisibility(View.INVISIBLE);
+                }else {
+                    helper.getView(R.id.petiyaak_blue_layout).setVisibility(View.VISIBLE);
+                    helper.getView(R.id.petiyaak_blue_status).setBackgroundResource(R.mipmap.ic_blue_remote);
+                    helper.setText(R.id.petiyaak_blue_name, item.getBluetoothName());
                 }
                 break;
 

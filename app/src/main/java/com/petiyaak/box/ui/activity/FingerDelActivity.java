@@ -124,8 +124,14 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
     private int selFingerId = -1;
 
     public static Intent startIntent(Context content, PetiyaakBoxInfo box, UserInfo info, boolean isBind) {
+        PetiyaakBoxInfo boxInfo = new PetiyaakBoxInfo(1);
+        boxInfo.setDeviceId(box.getDeviceId());
+        boxInfo.setDeviceName(box.getDeviceName());
+        boxInfo.setBluetoothMac(box.getBluetoothMac());
+        boxInfo.setBluetoothPwd(box.getBluetoothPwd());
+        boxInfo.setBluetoothName(box.getBluetoothName());
         Intent intent = new Intent(content, FingerDelActivity.class);
-        intent.putExtra(ConstantEntiy.INTENT_BOX, box);
+        intent.putExtra(ConstantEntiy.INTENT_BOX, boxInfo);
         intent.putExtra(ConstantEntiy.INTENT_USER, info);
         intent.putExtra(ConstantEntiy.INTENT_BIND, isBind);
         return intent;
@@ -179,7 +185,7 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
             showSel(userFinger4, userFinger4Value, fingerInfo.finger9);
             showSel(userFinger5, userFinger5Value, fingerInfo.finger10);
         }
-        initId();
+
     }
 
     @Override
@@ -198,10 +204,11 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
                 if (NoFastClickUtils.isFastClick()) {
                     return;
                 }
-                ToastUtils.showToast("Please wait a few seconds while connecting to bluetooth");
+                showWaitingDialog(getResources().getString(R.string.connect_loading)).show();
                 ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
                     @Override
                     public void onResponse(boolean isConnect) {
+                        dismissDialog();
                         if (isConnect) {
                             mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
                         } else {
@@ -552,6 +559,7 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
             ToastUtils.showToast("Fingerprint deleted successfully");
             info = responeData;
             initFinger();
+            initId();
         }
     }
 
@@ -580,6 +588,7 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
         if (responeData != null) {
             info = responeData;
             initFinger();
+            initId();
         }
     }
 

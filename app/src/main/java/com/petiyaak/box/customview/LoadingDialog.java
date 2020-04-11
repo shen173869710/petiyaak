@@ -4,12 +4,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.petiyaak.box.R;
 
@@ -21,6 +23,9 @@ public class LoadingDialog extends Dialog {
      */
     private ImageView iv;
     private AnimationDrawable mAnimationDrawable;
+    private TextView tv;
+    private String mTitle;
+
     public LoadingDialog(Context context) {
         super(context);
 
@@ -28,7 +33,11 @@ public class LoadingDialog extends Dialog {
 
     public LoadingDialog(Context context, int style) {
         super(context, style);
+    }
 
+    public LoadingDialog(Context context, int style, String title) {
+        super(context, style);
+        this.mTitle = title;
     }
 
     @Override
@@ -40,6 +49,15 @@ public class LoadingDialog extends Dialog {
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         iv = (ImageView) view.findViewById(R.id.loading_image);
         iv.setImageResource(R.drawable.main_loading);
+
+        tv = findViewById(R.id.loading_text);
+
+        if (TextUtils.isEmpty(mTitle)) {
+            tv.setVisibility(View.GONE);
+        }else {
+            tv.setVisibility(View.VISIBLE);
+            tv.setText(mTitle);
+        }
         Window window = getWindow();
         WindowManager.LayoutParams params = window.getAttributes();
         params.gravity = Gravity.CENTER;

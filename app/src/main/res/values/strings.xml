@@ -59,6 +59,8 @@
     <string name="atfae_fail4">atfae fail4</string>
 
 
+    <string name="connect_loading">connect bluetooth ...</string>
+
     public static final String ATFAE = "ATFAE";
 
 </resources>

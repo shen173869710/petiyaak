@@ -146,10 +146,10 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
             @Override
             public void accept(Object o) throws Exception {
 
-                if (!TextUtils.isEmpty(info.getBluetoothMac())) {
-                    ToastUtils.showToast("Bluetooth device already bound");
-                    return;
-                }
+//                if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+//                    ToastUtils.showToast("Bluetooth device already bound");
+//                    return;
+//                }
                 startActivity(BindPetiyaakActivity.getIntent(PetiyaakInfoActivity.this, info,true));
             }
         });
@@ -161,10 +161,11 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                 if (NoFastClickUtils.isFastClick()) {
                     return;
                 }
-                ToastUtils.showToast("Please wait a few seconds while connecting to bluetooth");
+                showWaitingDialog(getResources().getString(R.string.connect_loading)).show();
                 ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
                     @Override
                     public void onResponse(boolean isConnect) {
+                        dismissDialog();
                         if (isConnect) {
                             info.setItemBlueStatus(true);
                         } else {

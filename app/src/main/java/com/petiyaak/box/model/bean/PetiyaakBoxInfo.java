@@ -2,7 +2,6 @@ package com.petiyaak.box.model.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import java.io.Serializable;
-
 /**
  *  设备表
  */

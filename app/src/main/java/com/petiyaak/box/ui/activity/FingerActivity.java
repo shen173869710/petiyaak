@@ -1,5 +1,4 @@
 package com.petiyaak.box.ui.activity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -102,18 +101,19 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
     UserInfo userInfo;
     boolean isBind;
     private int postion = 0;
-
-    UUID readUuid;
-    UUID writeUuid;
-    UUID serverId;
     FingerDialog dialog;
-
     /**
      *  当前的指纹ID
      */
     private int currentId;
 
     public static Intent startIntent(Context content, PetiyaakBoxInfo box, UserInfo info, boolean isBind) {
+        PetiyaakBoxInfo boxInfo = new PetiyaakBoxInfo(1);
+        boxInfo.setDeviceId(box.getDeviceId());
+        boxInfo.setDeviceName(box.getDeviceName());
+        boxInfo.setBluetoothMac(box.getBluetoothMac());
+        boxInfo.setBluetoothPwd(box.getBluetoothPwd());
+        boxInfo.setBluetoothName(box.getBluetoothName());
         Intent intent = new Intent(content, FingerActivity.class);
         intent.putExtra(ConstantEntiy.INTENT_BOX, box);
         intent.putExtra(ConstantEntiy.INTENT_USER, info);
@@ -170,7 +170,6 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
             showSel(userFinger4, userFinger4Value, fingerInfo.finger9);
             showSel(userFinger5, userFinger5Value, fingerInfo.finger10);
         }
-        initId();
     }
 
     @Override
@@ -192,10 +191,11 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
                 if (NoFastClickUtils.isFastClick()) {
                     return;
                 }
-                ToastUtils.showToast("Please wait a few seconds while connecting to bluetooth");
+                showWaitingDialog(getResources().getString(R.string.connect_loading)).show();
                 ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
                     @Override
                     public void onResponse(boolean isConnect) {
+                        dismissDialog();
                         if (isConnect) {
                             mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
                         } else {
@@ -316,6 +316,7 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         if (responeData != null) {
             info = responeData;
             initFinger();
+            initId();
         }
     }
 
@@ -330,6 +331,7 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         if (responeData != null) {
             info = responeData;
             initFinger();
+            initId();
         }
     }
 
@@ -368,7 +370,6 @@ public class FingerActivity extends BaseActivity<FingerPresenter> implements IFi
         int resId = 0;
         TextView textView = null;
         int fingerId = 0;
-
         if (fingerInfo.leftFinger) {
             if (info.getLeftThumb() >= 0) {
                 imageView = userFinger1;

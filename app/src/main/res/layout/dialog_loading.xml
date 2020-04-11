@@ -9,4 +9,16 @@
         android:layout_height="60dp"
         android:layout_centerInParent="true"
         />
+    <TextView
+        android:id="@+id/loading_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFF00"
+        android:padding="5dp"
+        android:textSize="@dimen/size_16"
+        android:layout_below="@+id/loading_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        ></TextView>
 </RelativeLayout>

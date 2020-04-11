@@ -66,11 +66,19 @@ public abstract class BaseActivity<T extends BasePresenter> extends RxAppCompatA
     /**
      * 显示等待提示框
      */
-    private Dialog showWaitingDialog(String tip) {
+    private Dialog showWaitingDialog() {
         mLoadingDailog = new LoadingDialog(this, R.style.CustomDialog);
         return mLoadingDailog;
     }
 
+
+    /**
+     * 显示等待提示框
+     */
+    public Dialog showWaitingDialog( String title) {
+        mLoadingDailog = new LoadingDialog(this, R.style.CustomDialog,title);
+        return mLoadingDailog;
+    }
 
     @Override
     public LifecycleTransformer bindLifecycle() {
@@ -81,7 +89,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends RxAppCompatA
     @Override
     public void showDialog() {
         if (null == mLoadingDailog) {
-            showWaitingDialog("");
+            showWaitingDialog();
         }
         if (!mLoadingDailog.isShowing()) {
             mLoadingDailog.show();

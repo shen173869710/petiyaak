@@ -231,12 +231,13 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     }
 
     private void startScan() {
+        showDialog();
         BleManager.getInstance().scan(new BleScanCallback() {
             @Override
             public void onScanStarted(boolean success) {
                 mDeviceAdapter.clearScanDevice();
                 mDeviceAdapter.notifyDataSetChanged();
-                showDialog();
+
             }
 
             @Override
