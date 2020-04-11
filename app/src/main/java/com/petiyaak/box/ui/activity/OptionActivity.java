@@ -1,44 +1,39 @@
 package com.petiyaak.box.ui.activity;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.clj.fastble.BleManager;
-import com.clj.fastble.callback.BleNotifyCallback;
-import com.clj.fastble.callback.BleWriteCallback;
-import com.clj.fastble.data.BleDevice;
-import com.clj.fastble.exception.BleException;
+import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleUnnotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
-import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
+import com.petiyaak.box.customview.OnDialogClick;
+import com.petiyaak.box.event.ConnectEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.CommonPresenter;
+import com.petiyaak.box.util.ClientManager;
+import com.petiyaak.box.util.ConnectResponse;
+import com.petiyaak.box.util.DialogUtil;
 import com.petiyaak.box.util.LogUtils;
+import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.ICommonView;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
-
+import java.util.UUID;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
-
 /**
  * Created by chenzhaolin on 2019/11/4.
  */
@@ -57,17 +52,15 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
     TextView settingSend;
     @BindView(R.id.setting_receive_value)
     MClearEditText settingReceiveValue;
-
     PetiyaakBoxInfo info;
-    BleDevice device;
+    @BindView(R.id.main_title_right_image)
+    ImageView mainTitleRightImage;
 
-    String readUuid = "";
-    String writeUuid = "";
-    String serverId = "";
+    private final String TAG = "OptionActivit";
 
 
     public static Intent startIntent(Context content, PetiyaakBoxInfo box) {
-        Intent intent = new Intent(content, FingerActivity.class);
+        Intent intent = new Intent(content, OptionActivity.class);
         intent.putExtra(ConstantEntiy.INTENT_BOX, box);
         return intent;
     }
@@ -82,6 +75,62 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
     public void initData() {
         mainTitleBack.setVisibility(View.VISIBLE);
         mainTitleTitle.setText("option box");
+        mainTitleRight.setVisibility(View.VISIBLE);
+        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
+        info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
+        //mPresenter.getFingerprints(BaseApp.userInfo.getId(),info.getDeviceId());
+
+
+        showDialog();
+        /**
+         *   链接设备
+         */
+        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+            ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
+                @Override
+                public void onResponse(boolean isConnect) {
+                    if (isConnect) {
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+                        ClientManager.getInstance().notifyData(info.getBluetoothMac(), new BleNotifyResponse() {
+
+                            @Override
+                            public void onResponse(int code) {
+                                LogUtils.e(TAG, "notify onResponse code =  " + code);
+
+                            }
+
+                            @Override
+                            public void onNotify(UUID service, UUID character, byte[] value) {
+                                LogUtils.e(TAG, "notify()  " + new String(value));
+                                getRespone(new String(value).trim());
+                            }
+                        });
+                    } else {
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     *     获取指纹的返回值
+     * @param respone
+     */
+    private void getRespone(String respone) {
+        if (TextUtils.isEmpty(respone)) {
+            return;
+        }
+        if (respone.contains(ConstantEntiy.ATLKO_OK)) {
+            ToastUtils.showToast("open box successful， code "+respone);
+        }else {
+            ToastUtils.showToast("open box error， error code "+respone);
+        }
+
+    }
+
+    @Override
+    public void initListener() {
         RxView.clicks(mainTitleBack).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
@@ -89,87 +138,12 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
             }
         });
 
-        info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
-        mPresenter.getFingerprints(BaseApp.userInfo.getId(),info.getDeviceId());
-    }
-
-    @Override
-    public void initListener() {
-        List<BleDevice> devices = BleManager.getInstance().getAllConnectedDevice();
-        if (devices == null || devices.size() == 0) {
-            ToastUtils.showToast("no connect device");
-            return;
-        }
-
-        int size = devices.size();
-        for (int i = 0; i < size; i++) {
-            if (info.getBluetoothName().equals(devices.get(i).getName())) {
-                device = devices.get(i);
-            }
-        }
-
-        if (device != null) {
-            BluetoothGatt gatt = BleManager.getInstance().getBluetoothGatt(device);
-            if (gatt != null) {
-                for (BluetoothGattService service : gatt.getServices()) {
-                    List<BluetoothGattCharacteristic> chars = service.getCharacteristics();
-                    if (chars != null && chars.size() > 0) {
-                        for (BluetoothGattCharacteristic bchar : chars) {
-                            if (bchar != null) {
-                                String uuid = bchar.getUuid().toString();
-                                if (!TextUtils.isEmpty(uuid) && uuid.contains("fff4")) {
-                                    readUuid = uuid;
-                                    LogUtils.e("OptionActivity", "readUUid = "+readUuid);
-                                    serverId = service.getUuid().toString();
-                                    LogUtils.e("OptionActivity", "serverId = "+serverId);
-                                }
-
-                                if (!TextUtils.isEmpty(uuid) && uuid.contains("fff3")) {
-                                    writeUuid = uuid;
-                                    LogUtils.e("OptionActivity", "writeUuid = "+writeUuid);
-                                    serverId = service.getUuid().toString();
-                                    LogUtils.e("OptionActivity", "serverId = "+serverId);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (!TextUtils.isEmpty(readUuid)) {
-            BleManager.getInstance().notify(
-                    device,
-                    serverId,
-                    readUuid,
-                    new BleNotifyCallback() {
-
-                        @Override
-                        public void onNotifySuccess() {
-                            ToastUtils.showToast("onNotifySuccess  ");
-                        }
-
-                        @Override
-                        public void onNotifyFailure(final BleException exception) {
-                            ToastUtils.showToast("onNotifyFailure  "+exception.toString());
-                        }
-
-                        @Override
-                        public void onCharacteristicChanged(final byte[] data) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    settingReceiveValue.setText(new String(data)+"");
-                                }
-                            });
-                        }
-                    });
-
-        }
-
         RxView.clicks(settingSend).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
                 String value = settingSendValue.getText().toString();
                 if (!TextUtils.isEmpty(value)) {
                     write(value.getBytes());
@@ -181,10 +155,32 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
         RxView.clicks(settingOpen).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                write("ATLKO".getBytes());
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                write(ConstantEntiy.ATLKO.getBytes());
             }
         });
 
+        findViewById(R.id.main_title_right_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                ToastUtils.showToast("Please wait a few seconds while connecting to bluetooth");
+                ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
+                    @Override
+                    public void onResponse(boolean isConnect) {
+                        if (isConnect) {
+                            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+                        } else {
+                            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
+                        }
+                    }
+                });
+            }
+        });
 
     }
 
@@ -198,58 +194,45 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
         return this;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoingEvent(int i) {
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
-    public void write(byte[] value) {
-        BleManager.getInstance().write(
-                device,
-                serverId,
-                writeUuid,
-                value,
-                new BleWriteCallback() {
-                    @Override
-                    public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ToastUtils.showToast("onWriteSuccess  ");
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onWriteFailure(final BleException exception) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ToastUtils.showToast("onWriteFailure  "+exception.toString());
-                            }
-                        });
-
-                    }
-                });
-    }
-
     @Override
     public void success(BaseRespone respone) {
         PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
-        if (boxInfo != null) {
-            ToastUtils.showToast("BaseRespone success");
-        }
+
     }
 
     @Override
     public void fail(Throwable error, Integer code, String msg) {
 
+    }
+
+    public void write(byte[] value) {
+        ClientManager.getInstance().writeData(info.getBluetoothMac(), value, new BleWriteResponse() {
+            @Override
+            public void onResponse(int code) {
+                LogUtils.e(TAG, "writeData -- onResponse code= "+code);
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectEvent(ConnectEvent event) {
+        if (event.isConnect()) {
+            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+        }else {
+            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);;
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (info != null) {
+            ClientManager.getInstance().unnotifyData(info.getBluetoothMac(), new BleUnnotifyResponse() {
+                @Override
+                public void onResponse(int code) {
+                    LogUtils.e(TAG, "unnotifyData -- onResponse code= "+code);
+                }
+            });
+            ClientManager.getInstance().disconnect(info.getBluetoothMac());
+        }
     }
 }

@@ -62,7 +62,6 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
         shareList.setLayoutManager(new LinearLayoutManager(mContext));
         mAdapter = new ShareDeviceListAdapter(infos);
         shareList.setAdapter(mAdapter);
-
         mAdapter.addChildClickViewIds(R.id.share_submit);
         mAdapter.addChildClickViewIds(R.id.share_bind);
         mAdapter.setOnItemChildClickListener(new OnItemChildClickListener() {

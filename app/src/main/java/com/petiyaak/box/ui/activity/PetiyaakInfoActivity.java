@@ -4,33 +4,33 @@ import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.inuker.bluetooth.library.BluetoothClient;
-import com.inuker.bluetooth.library.Constants;
-import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
-import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
-import com.inuker.bluetooth.library.model.BleGattProfile;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.ShareListAdapter;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
-import com.petiyaak.box.customview.OnDialogClick;
 import com.petiyaak.box.event.BindSucessEvent;
+import com.petiyaak.box.event.ConnectEvent;
 import com.petiyaak.box.event.ShareSucessEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.PetiyaakInfoPresenter;
-import com.petiyaak.box.util.DialogUtil;
+import com.petiyaak.box.util.ClientManager;
+import com.petiyaak.box.util.ConnectResponse;
 import com.petiyaak.box.util.LogUtils;
+import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IPetiyaakInfoView;
 
@@ -44,8 +44,6 @@ import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.functions.Consumer;
 
-import static com.inuker.bluetooth.library.Constants.REQUEST_SUCCESS;
-
 /**
  * Created by chenzhaolin on 2019/11/4.
  */
@@ -57,6 +55,9 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     TextView mainTitleTitle;
     @BindView(R.id.main_title_right)
     RelativeLayout mainTitleRight;
+    @BindView(R.id.main_title_right_image)
+    ImageView mainTitleRightImage;
+
     @BindView(R.id.info_icon)
     CircleImageView infoIcon;
     @BindView(R.id.petiyaak_info_name)
@@ -78,7 +79,6 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     List<UserInfo> userInfos = new ArrayList<>();
     private ShareListAdapter mAdapter;
 
-    private int cuttentPostion;
     @Override
     protected int getContentView() {
         return R.layout.activity_petiyaak_info;
@@ -89,6 +89,9 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
         mainTitleBack.setVisibility(View.VISIBLE);
         mainTitleTitle.setText("My petiyaakInfo Box");
+        mainTitleRight.setVisibility(View.VISIBLE);
+        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
+
         petiyaakInfoName.setText(info.getDeviceName());
         if (info.isItemBlueStatus()) {
             petiyaakInfoStatus.setText(R.string.connect);
@@ -104,31 +107,26 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
             mPresenter.getUserListByDeviceId(info.getDeviceId(),true);
         }
 
-        BluetoothClient mClient = new BluetoothClient(this);
         if (!TextUtils.isEmpty(info.getBluetoothMac())) {
-            BleConnectOptions options = new BleConnectOptions.Builder()
-                    .setConnectRetry(3)   // 连接如果失败重试3次
-                    .setConnectTimeout(30000)   // 连接超时30s
-                    .setServiceDiscoverRetry(3)  // 发现服务如果失败重试3次
-                    .setServiceDiscoverTimeout(20000)  // 发现服务超时20s
-                    .build();
-            mClient.clearRequest(info.getBluetoothMac(), Constants.REQUEST_READ);
-            mClient.clearRequest(info.getBluetoothMac(), Constants.REQUEST_WRITE);
-            mClient.connect(info.getBluetoothMac(), options,new BleConnectResponse() {
+            ClientManager.getInstance().registerConnectStatusListener(info.getBluetoothMac());
+            ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
                 @Override
-                public void onResponse(int code, BleGattProfile profile) {
-                    LogUtils.e("PetiyaakInfoActivity", "connect->onResponse"+code);
-                    if (code == REQUEST_SUCCESS) {
+                public void onResponse(boolean isConnect) {
+                    LogUtils.e("PetiyaakInfoActivity", "connect->onResponse" + isConnect);
+                    if (isConnect) {
                         info.setItemBlueStatus(true);
-                    }else {
+                    } else {
                         info.setItemBlueStatus(false);
                     }
                     if (info.isItemBlueStatus()) {
                         petiyaakInfoStatus.setText(R.string.connect);
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
                         petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.dark));
-                    }else {
+                    } else {
                         petiyaakInfoStatus.setText(R.string.disconnect);
                         petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
+                        ;
                     }
                 }
             });
@@ -152,11 +150,41 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                     ToastUtils.showToast("Bluetooth device already bound");
                     return;
                 }
-                Intent intent = new Intent(PetiyaakInfoActivity.this, BindPetiyaakActivity.class);
-                intent.putExtra(ConstantEntiy.INTENT_BOX, info);
-                startActivity(intent);
+                startActivity(BindPetiyaakActivity.getIntent(PetiyaakInfoActivity.this, info,true));
             }
         });
+
+
+        findViewById(R.id.main_title_right_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                ToastUtils.showToast("Please wait a few seconds while connecting to bluetooth");
+                ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
+                    @Override
+                    public void onResponse(boolean isConnect) {
+                        if (isConnect) {
+                            info.setItemBlueStatus(true);
+                        } else {
+                            info.setItemBlueStatus(false);
+                        }
+                        if (info.isItemBlueStatus()) {
+                            petiyaakInfoStatus.setText(R.string.connect);
+                            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+                            petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.dark));
+                        } else {
+                            petiyaakInfoStatus.setText(R.string.disconnect);
+                            petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
+                            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
+                        }
+                    }
+                });
+            }
+        });
+
+
 
 
         RxView.clicks(infoFinger).subscribe(new Consumer<Object>() {
@@ -203,17 +231,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 UserInfo userInfo = userInfos.get(position);
                 if ( view.getId() == R.id.share_submit ) {
-                    DialogUtil.cancleToUser(PetiyaakInfoActivity.this, userInfo.getUsername(), new OnDialogClick() {
-                        @Override
-                        public void onDialogOkClick(String value) {
-                          cuttentPostion = position;
-                          startActivity( FingerDelActivity.startIntent(PetiyaakInfoActivity.this,info,userInfo,false));
-                        }
-                        @Override
-                        public void onDialogCloseClick(String value) {
-
-                        }
-                    });
+                    startActivity( FingerDelActivity.startIntent(PetiyaakInfoActivity.this,info,userInfo,false));
                 } else if (view.getId() == R.id.share_bind) {
                     startActivity(FingerActivity.startIntent(PetiyaakInfoActivity.this,info,userInfo,false));
                 }
@@ -237,14 +255,31 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
             info.setBluetoothName(event.getInfo().getBluetoothName());
             info.setItemBlueStatus(true);
             info.setBluetoothMac(event.getInfo().getBluetoothMac());
+            info.setDeviceId(event.getInfo().getDeviceId());
             petiyaakInfoName.setText(info.getDeviceName());
             if (info.isItemBlueStatus()) {
                 petiyaakInfoStatus.setText(R.string.connect);
+                mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
                 petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.dark));
             }else {
                 petiyaakInfoStatus.setText(R.string.disconnect);
                 petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
+                mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);;
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectEvent(ConnectEvent event) {
+        info.setItemBlueStatus(event.isConnect());
+        if (info.isItemBlueStatus()) {
+            petiyaakInfoStatus.setText(R.string.connect);
+            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+            petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.dark));
+        }else {
+            petiyaakInfoStatus.setText(R.string.disconnect);
+            petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
+            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);;
         }
     }
 
@@ -257,7 +292,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     @Override
     public void success(BaseRespone respone) {
         List<UserInfo> list = (List<UserInfo> )respone.getData();
-        if (list != null && list.size() > 0) {
+        if (list != null) {
             userInfos.clear();
             userInfos.addAll(list);
             mAdapter.notifyDataSetChanged();
@@ -269,4 +304,13 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         ToastUtils.showToast(""+msg);
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (info != null) {
+            ClientManager.getInstance().disconnect(info.getBluetoothMac());
+            ClientManager.getInstance().unRegisterConnectStatusListener(info.getBluetoothMac());
+        }
+    }
 }

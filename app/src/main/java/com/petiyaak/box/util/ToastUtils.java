@@ -29,14 +29,14 @@ public class ToastUtils {
     public static void showToast(String s) {
         try{
             if (toast == null) {
-                toast = ToastCompat.makeText(BaseApp.getInstance(), s, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER,0,0);
+                toast = ToastCompat.makeText(BaseApp.getInstance(), s, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM,0,0);
                 toast.show();
                 oneTime = System.currentTimeMillis();
             } else {
                 twoTime = System.currentTimeMillis();
                 if (s.equals(oldMsg)) {
-                    if (twoTime - oneTime > Toast.LENGTH_SHORT) {
+                    if (twoTime - oneTime > Toast.LENGTH_LONG) {
                         toast.show();
                     }
                 } else {

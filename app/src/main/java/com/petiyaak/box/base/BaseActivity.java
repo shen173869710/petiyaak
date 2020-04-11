@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
-
 import com.petiyaak.box.R;
 import com.petiyaak.box.customview.LoadingDialog;
 import com.petiyaak.box.presenter.BasePresenter;
@@ -15,11 +14,9 @@ import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import butterknife.ButterKnife;
 import io.reactivex.annotations.Nullable;
 import io.reactivex.functions.Consumer;
@@ -69,7 +66,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends RxAppCompatA
     /**
      * 显示等待提示框
      */
-    public Dialog showWaitingDialog(String tip) {
+    private Dialog showWaitingDialog(String tip) {
         mLoadingDailog = new LoadingDialog(this, R.style.CustomDialog);
         return mLoadingDailog;
     }
@@ -99,7 +96,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends RxAppCompatA
     /**
      * 隐藏等待提示框
      */
-    public void hideWaitingDialog() {
+    private void hideWaitingDialog() {
         if (mLoadingDailog != null && mLoadingDailog.isShowing()) {
             mLoadingDailog.dismiss();
             mLoadingDailog = null;

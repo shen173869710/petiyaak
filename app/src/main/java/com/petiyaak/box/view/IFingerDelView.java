@@ -21,4 +21,12 @@ public interface IFingerDelView extends BaseView{
     void cancleSuccess(BaseRespone respone);
     void cancleFail(Throwable error, Integer code, String msg);
 
+    /**
+     *        获取用户指纹列表
+     * @param respone
+     */
+    void success(BaseRespone respone);
+    void fail(Throwable error, Integer code, String msg);
+
+
 }

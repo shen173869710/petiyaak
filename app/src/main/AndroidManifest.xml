@@ -41,6 +41,9 @@
         <activity android:name=".ui.activity.FingerDelActivity"  android:screenOrientation="portrait" />
         <activity android:name=".ui.activity.OptionActivity"   android:screenOrientation="portrait"/>
         <activity android:name=".ui.activity.ShareActivity"  android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.inuker.bluetooth.library.BluetoothService" />
     </application>
 
 </manifest>

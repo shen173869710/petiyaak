@@ -98,4 +98,29 @@ public class FingerDelPresenter extends BasePresenter<IFingerDelView>{
                 });
     }
 
+    /**
+     *    用户ID, 设备ID 获取用户指纹信息
+     */
+    public void getFingerprints(int userId, int deviceId) {
+        TreeMap<String, Object> treeMap = new TreeMap<>();
+        treeMap.put("userId",userId);
+        treeMap.put("deviceId",deviceId);
+        doHttpTaskWihtDialog(getApiService().getFingerprints(treeMap),
+                new HttpManager.OnResultListener() {
+                    @Override
+                    public void onSuccess(BaseRespone respone) {
+                        if (respone != null && respone.isOk() && null !=respone.getData()) {
+                            getBaseView().success(respone);
+                        }else{
+                            getBaseView().fail(null,-1, respone.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable error, Integer code,String msg) {
+                        getBaseView().fail(error,code, msg);
+                    }
+                });
+    }
+
 }

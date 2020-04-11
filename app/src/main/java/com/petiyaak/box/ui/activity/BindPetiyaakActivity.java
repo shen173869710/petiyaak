@@ -43,11 +43,7 @@ import com.petiyaak.box.presenter.BindPresenter;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IBindView;
-
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +72,15 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
 
     private String bluetoothName;
     private String bluetoothMac;
+    private boolean isBind;
+
+
+    public static Intent getIntent(Context context, PetiyaakBoxInfo info, boolean isBind) {
+        Intent intent = new Intent(context, BindPetiyaakActivity.class);
+        intent.putExtra(ConstantEntiy.INTENT_BOX, info);
+        intent.putExtra(ConstantEntiy.INTENT_BIND, isBind);
+        return intent;
+    }
 
     @Override
     protected int getContentView() {
@@ -166,10 +171,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
         return this;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoingEvent(int i) {
 
-    }
 
     private void checkPermissions() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -331,6 +333,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             info.setItemBlueStatus(true);
             info.setBluetoothMac(bRespone.getBluetoothMac());
             info.setDeviceName(bRespone.getDeviceName());
+            info.setDeviceId(bRespone.getDeviceId());
             EventBus.getDefault().post(new BindSucessEvent(info));
             finish();
         }

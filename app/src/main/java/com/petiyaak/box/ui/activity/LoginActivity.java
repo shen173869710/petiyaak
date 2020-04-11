@@ -92,7 +92,6 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
 
     @Override
     public void loginSuccess(BaseRespone respone) {
-
         BaseApp.userInfo = (UserInfo) respone.data;
         if (BaseApp.userInfo != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));

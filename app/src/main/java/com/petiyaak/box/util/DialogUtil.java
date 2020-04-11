@@ -69,7 +69,7 @@ public class DialogUtil {
 
     public static void delFinger(Context context, int  id, OnDialogClick onDialogClick) {
         DialogContent content = new DialogContent();
-        content.desc = "Delete finger" + id;
+        content.desc = "Delete finger " + id;
         content.ok = "Ok";
         content.cancle = "No";
         content.hideEidt = true;

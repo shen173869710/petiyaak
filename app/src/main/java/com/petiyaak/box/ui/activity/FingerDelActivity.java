@@ -10,41 +10,40 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.clj.fastble.data.BleDevice;
-import com.inuker.bluetooth.library.BluetoothClient;
-import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
-import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleUnnotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
-import com.inuker.bluetooth.library.model.BleGattCharacter;
-import com.inuker.bluetooth.library.model.BleGattProfile;
-import com.inuker.bluetooth.library.model.BleGattService;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.FingerDialog;
 import com.petiyaak.box.customview.OnDialogClick;
+import com.petiyaak.box.event.ConnectEvent;
 import com.petiyaak.box.event.ShareSucessEvent;
 import com.petiyaak.box.model.bean.FingerInfo;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.FingerDelPresenter;
+import com.petiyaak.box.util.ClientManager;
+import com.petiyaak.box.util.ConnectResponse;
 import com.petiyaak.box.util.DialogUtil;
 import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IFingerDelView;
+
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.inuker.bluetooth.library.Constants.REQUEST_SUCCESS;
-
 public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implements IFingerDelView {
-    private final String TAG = "FingerActivity";
+    private final String TAG = "FingerDelActivity";
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
     @BindView(R.id.main_title_title)
@@ -101,6 +100,9 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
     @BindView(R.id.user_finger_5_id)
     TextView userFinger5Id;
 
+    @BindView(R.id.main_title_right_image)
+    ImageView mainTitleRightImage;
+
     @BindView(R.id.cancle)
     TextView cancle;
 
@@ -110,18 +112,16 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
     boolean isBind;
     private int postion = 0;
 
-    BleDevice device;
-    UUID readUuid;
-    UUID writeUuid;
-    UUID serverId;
-
     FingerDialog dialog;
-    BluetoothClient mClient;
 
     /**
      *  当前的指纹ID
      */
     private int currentId;
+    /**
+     *   选中的指纹
+     */
+    private int selFingerId = -1;
 
     public static Intent startIntent(Context content, PetiyaakBoxInfo box, UserInfo info, boolean isBind) {
         Intent intent = new Intent(content, FingerDelActivity.class);
@@ -135,38 +135,26 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
     protected int getContentView() {
         return R.layout.activity_finger_del;
     }
-
+    @Override
+    protected FingerDelPresenter createPresenter() {
+        return new FingerDelPresenter();
+    }
 
     @Override
     public void initData() {
         fingerInfo = new FingerInfo();
         fingerInfo.leftFinger = true;
-        mainTitleTitle.setText("Bind Finger");
+        mainTitleTitle.setText("Delete Finger");
         uesrItemName.setText(fingerInfo.userName);
         mainTitleBack.setVisibility(View.VISIBLE);
+        mainTitleRight.setVisibility(View.VISIBLE);
+        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
 
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
         userInfo = (UserInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_USER);
         isBind = getIntent().getBooleanExtra(ConstantEntiy.INTENT_BIND, false);
         initFinger();
-        mClient = new BluetoothClient(this);
-        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
-            BleConnectOptions options = new BleConnectOptions.Builder()
-                    .setConnectRetry(3)   // 连接如果失败重试3次
-                    .setConnectTimeout(30000)   // 连接超时30s
-                    .setServiceDiscoverRetry(3)  // 发现服务如果失败重试3次
-                    .setServiceDiscoverTimeout(20000)  // 发现服务超时20s
-                    .build();
-            mClient.connect(info.getBluetoothMac(), options, new BleConnectResponse() {
-                @Override
-                public void onResponse(int code, BleGattProfile profile) {
-                    if (code == REQUEST_SUCCESS) {
-                        initUUID(profile);
-                    }
-                }
-            });
-        }
-        //mPresenter.getFingerprints(userInfo.getId(), info.getDeviceId());
+        mPresenter.getFingerprints(userInfo.getId(), info.getDeviceId());
     }
 
     private void initFinger() {
@@ -196,83 +184,66 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
 
     @Override
     public void initListener() {
-        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
-            BleConnectOptions options = new BleConnectOptions.Builder()
-                    .setConnectRetry(3)   // 连接如果失败重试3次
-                    .setConnectTimeout(30000)   // 连接超时30s
-                    .setServiceDiscoverRetry(3)  // 发现服务如果失败重试3次
-                    .setServiceDiscoverTimeout(20000)  // 发现服务超时20s
-                    .build();
-            mClient.connect(info.getBluetoothMac(), options, new BleConnectResponse() {
-                @Override
-                public void onResponse(int code, BleGattProfile profile) {
-                    if (code == REQUEST_SUCCESS) {
-                        initUUID(profile);
-                    }
-                }
-            });
-        }
-
         findViewById(R.id.main_title_title).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                write("ATFDE=999".getBytes());
             }
         });
-    }
-
-    @Override
-    protected FingerDelPresenter createPresenter() {
-        return new FingerDelPresenter();
-    }
 
 
-    /**
-     *  初始化相关id
-     */
-    private void initUUID(BleGattProfile profile) {
-        if (profile != null && profile.getServices() != null) {
-            for (BleGattService bchar : profile.getServices()) {
-                if (bchar != null && bchar.getCharacters() != null && bchar.getUUID() != null) {
-                    for(BleGattCharacter character :    bchar.getCharacters()) {
-                        if (character != null && character.getUuid() != null) {
-                            String uuid = character.getUuid().toString();
-                            if (!TextUtils.isEmpty(uuid) && uuid.contains("fff4")) {
-                                readUuid = character.getUuid();
-                                LogUtils.e(TAG, "readUUid = " + readUuid);
-                                serverId = bchar.getUUID();
-                                LogUtils.e(TAG, "serverId = " + serverId);
-                            }
-                            if (!TextUtils.isEmpty(uuid) && uuid.contains("fff3")) {
-                                writeUuid = character.getUuid();
-                                LogUtils.e(TAG, "writeUuid = " + writeUuid);
-                                serverId = bchar.getUUID();
-                                LogUtils.e(TAG, "serverId = " + serverId);
-                            }
+        findViewById(R.id.main_title_right_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                ToastUtils.showToast("Please wait a few seconds while connecting to bluetooth");
+                ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
+                    @Override
+                    public void onResponse(boolean isConnect) {
+                        if (isConnect) {
+                            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+                        } else {
+                            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
                         }
                     }
-                }
+                });
             }
-        }
-        if (serverId != null && readUuid != null) {
-            mClient.notify(info.getBluetoothMac(), serverId, readUuid, new BleNotifyResponse() {
-                @Override
-                public void onNotify(UUID service, UUID character, byte[] value) {
-                    LogUtils.e(TAG, "notify()  "+new String(value));
-                    getRespone(new String(value).trim());
-                }
+        });
 
-                @Override
-                public void onResponse(int code) {
-                    LogUtils.e(TAG, "notify onResponse code =  "+code);
-                    if (code == REQUEST_SUCCESS) {
 
+        /**
+         *   链接设备
+         */
+        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+            ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
+                @Override
+                public void onResponse(boolean isConnect) {
+                    if (isConnect) {
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+                        ClientManager.getInstance().notifyData(info.getBluetoothMac(), new BleNotifyResponse() {
+
+                            @Override
+                            public void onResponse(int code) {
+                                LogUtils.e(TAG, "notify onResponse code =  " + code);
+                            }
+
+                            @Override
+                            public void onNotify(UUID service, UUID character, byte[] value) {
+                                LogUtils.e(TAG, "notify()  " + new String(value));
+                                getRespone(new String(value).trim());
+                            }
+                        });
+                    } else {
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
                     }
                 }
             });
         }
-    }
 
+
+    }
     /**
      *     获取指纹的返回值
      * @param respone
@@ -281,17 +252,13 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
         if (TextUtils.isEmpty(respone)) {
             return;
         }
-        if (respone.contains(ConstantEntiy.ATFAE)) {
-
+        if (respone.contains(ConstantEntiy.ATFDE_OK)) {
+            mPresenter.delFingerprints(userInfo.getId(),info.getDeviceId(),postion,-1,isBind);
+        }else {
+            ToastUtils.showToast("Fingerprint deletion failed, Maybe the fingerprints don't exist， error code "+respone);
         }
 
     }
-
-    @Override
-    public Activity getActivity() {
-        return this;
-    }
-
 
     public void showSel(ImageView finger, TextView value, String fingerCode) {
         boolean isSel = false;
@@ -306,14 +273,21 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
             value.setTextColor(getResources().getColor(R.color.black_30));
         }
     }
-
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
 
     private void showFingerDialog() {
-        int fingerId = -1;
-        DialogUtil.delFinger(FingerDelActivity.this, fingerId, new OnDialogClick() {
+        selFingerId = ConstantEntiy.getFingerId(info,postion);
+        if (selFingerId < 0) {
+            ToastUtils.showToast("Currently there is no bound fingerprint");
+            return;
+        }
+        DialogUtil.delFinger(FingerDelActivity.this, selFingerId, new OnDialogClick() {
             @Override
             public void onDialogOkClick(String value) {
-                mPresenter.delFingerprints(userInfo.getId(),info.getDeviceId(),postion,fingerId,isBind);
+                write(ConstantEntiy.getATFDEstirng(selFingerId).getBytes());
             }
 
             @Override
@@ -322,7 +296,6 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
             }
         });
     }
-
     /**
      * 初始化用户ID
      */
@@ -479,7 +452,6 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
             R.id.user_finger_1, R.id.user_finger_2, R.id.user_finger_3,
             R.id.user_finger_4, R.id.user_finger_5, R.id.cancle})
     public void onClick(View view) {
-
         if (NoFastClickUtils.isFastClick()) {
             return;
         }
@@ -512,6 +484,7 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
                 } else {
                     postion = 7;
                 }
+                selFingerId = ConstantEntiy.getFingerId(info, postion);
                 showFingerDialog();
                 break;
             case R.id.user_finger_3:
@@ -564,14 +537,10 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
 
 
     public void write(byte[] value) {
-        if (mClient == null || serverId == null || writeUuid == null) {
-            LogUtils.e(TAG, "write() =  null");
-            return;
-        }
-        mClient.write(info.getBluetoothMac(), serverId, writeUuid, value, new BleWriteResponse() {
+        ClientManager.getInstance().writeData(info.getBluetoothMac(), value, new BleWriteResponse() {
             @Override
             public void onResponse(int code) {
-                LogUtils.e(TAG, "write -- onResponse code= "+code);
+                LogUtils.e(TAG, "writeData -- onResponse code= "+code);
             }
         });
     }
@@ -580,6 +549,7 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
     public void delFingerSuccess(BaseRespone respone) {
         PetiyaakBoxInfo responeData = (PetiyaakBoxInfo) respone.getData();
         if (responeData != null) {
+            ToastUtils.showToast("Fingerprint deleted successfully");
             info = responeData;
             initFinger();
         }
@@ -593,6 +563,7 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
     @Override
     public void cancleSuccess(BaseRespone respone) {
         if (respone.isOk()) {
+            ToastUtils.showToast("Unshare success");
             EventBus.getDefault().post(new ShareSucessEvent());
             finish();
         }
@@ -600,6 +571,42 @@ public class FingerDelActivity extends BaseActivity<FingerDelPresenter> implemen
 
     @Override
     public void cancleFail(Throwable error, Integer code, String msg) {
-        ToastUtils.showToast(""+msg);
+        ToastUtils.showToast("Unshare failed "+msg);
+    }
+
+    @Override
+    public void success(BaseRespone respone) {
+        PetiyaakBoxInfo responeData = (PetiyaakBoxInfo) respone.getData();
+        if (responeData != null) {
+            info = responeData;
+            initFinger();
+        }
+    }
+
+    @Override
+    public void fail(Throwable error, Integer code, String msg) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectEvent(ConnectEvent event) {
+        if (event.isConnect()) {
+            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+        }else {
+            mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);;
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (info != null) {
+            ClientManager.getInstance().unnotifyData(info.getBluetoothMac(), new BleUnnotifyResponse() {
+                @Override
+                public void onResponse(int code) {
+                    LogUtils.e(TAG, "unnotifyData -- onResponse code= "+code);
+                }
+            });
+            ClientManager.getInstance().disconnect(info.getBluetoothMac());
+        }
     }
 }
