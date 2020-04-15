@@ -23,6 +23,20 @@
         android:background="@drawable/main_blue_bg"
         ></TextView>
 
+    <TextView
+        android:id="@+id/setting_del"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:text="delete all finger"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_16"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/main_blue_bg"
+        ></TextView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -55,6 +69,7 @@
             android:text="send"
             android:textColor="@color/white"
             android:textSize="@dimen/size_16"></TextView>
+
     </LinearLayout>
 
 

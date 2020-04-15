@@ -27,10 +27,8 @@ import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IFingerView;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.UUID;
 import butterknife.BindView;
 import butterknife.OnClick;

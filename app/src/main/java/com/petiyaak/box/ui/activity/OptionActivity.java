@@ -57,6 +57,10 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
     @BindView(R.id.main_title_right_image)
     ImageView mainTitleRightImage;
 
+    @BindView(R.id.setting_del)
+    TextView settingDel;
+
+
     private final String TAG = "OptionActivit";
 
 
@@ -130,6 +134,11 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
             ToastUtils.showToast("open box error， error code "+respone);
         }
 
+
+        if(respone.contains(ConstantEntiy.ATFDE_OK)) {
+            ToastUtils.showToast("delete all finger successful");
+        }
+
     }
 
     @Override
@@ -164,6 +173,19 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
                 write(ConstantEntiy.ATLKO.getBytes());
             }
         });
+
+
+
+        RxView.clicks(settingDel).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                if (NoFastClickUtils.isFastClick()) {
+                    return;
+                }
+                write(ConstantEntiy.getATFDEstirng(999).getBytes());
+            }
+        });
+
 
         findViewById(R.id.main_title_right_image).setOnClickListener(new View.OnClickListener() {
             @Override
