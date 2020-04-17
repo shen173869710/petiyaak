@@ -1,6 +1,5 @@
 package com.petiyaak.box.base;
 
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,18 +7,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.petiyaak.box.R;
 import com.petiyaak.box.customview.LoadingDialog;
 import com.petiyaak.box.presenter.BasePresenter;
 import com.petiyaak.box.view.BaseView;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxFragment;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-
 /**
  * 基类Fragment
  * 备注:所有的Fragment都继承自此Fragment
@@ -36,9 +31,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends RxFragment i
     protected LoadingDialog mLoadingDialog;
     protected Unbinder bind;
 
-    private boolean isFirst = true;//是否第一次加载
-    private boolean isViewCreate = false;//view是否创建
-    private boolean isViewVisible = false;//view是否可见
+
 
     @Override
     public void onAttach(Context context) {
@@ -102,7 +95,6 @@ public abstract class BaseFragment<T extends BasePresenter> extends RxFragment i
             mPresenter.detachView();
         }
         bind.unbind();
-        isViewCreate = false;
     }
 
     /**

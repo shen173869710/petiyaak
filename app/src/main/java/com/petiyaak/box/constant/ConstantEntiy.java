@@ -1,7 +1,6 @@
 package com.petiyaak.box.constant;
 
-import android.content.Intent;
-
+import com.petiyaak.box.R;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 
 /**
@@ -120,4 +119,17 @@ public class ConstantEntiy {
                 return -1;
         }
     }
+
+    public static int [] USER_HEAD_ID = {
+            R.mipmap.head_1,
+            R.mipmap.head_2,
+            R.mipmap.head_3,
+            R.mipmap.head_4,
+            R.mipmap.head_5,
+            R.mipmap.head_6,
+            R.mipmap.head_7,
+            R.mipmap.head_8,
+            R.mipmap.head_9,
+            R.mipmap.head_10,
+    };
 }
