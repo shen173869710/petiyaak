@@ -3,18 +3,10 @@ package com.petiyaak.box.base;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 
-import com.clj.fastble.BleManager;
 import com.petiyaak.box.model.bean.UserInfo;
-import com.petiyaak.box.util.LogUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +32,10 @@ public class BaseApp extends Application {
     public void onCreate() {
         super.onCreate();
             mBaseApp = this;
+
+        CrashReport.initCrashReport(getApplicationContext(), "a28fd1f967", false);
+
+
 
     }
 
