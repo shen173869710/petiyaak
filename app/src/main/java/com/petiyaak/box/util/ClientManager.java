@@ -69,6 +69,10 @@ public class ClientManager {
      *   链接设备
      */
     public void connectDevice(String mac, ConnectResponse response) {
+        if (TextUtils.isEmpty(mac)) {
+            LogUtils.e(TAG, "蓝牙地址为空   74");
+            return;
+        }
         if (!mClient.isBluetoothOpened()) {
             ToastUtils.showToast("The bluetooth of the mobile phone is not turned on, please turn on the bluetooth of the mobile phone");
         }
@@ -105,6 +109,12 @@ public class ClientManager {
      * @return
      */
     public boolean getConnectStatus(String mac) {
+        if (TextUtils.isEmpty(mac)) {
+            LogUtils.e(TAG, "蓝牙地址为空   113");
+            return false;
+        }
+
+
         int status = mClient.getConnectStatus(mac);
         if (status == Constants.STATUS_DEVICE_CONNECTED) {
             return true;
