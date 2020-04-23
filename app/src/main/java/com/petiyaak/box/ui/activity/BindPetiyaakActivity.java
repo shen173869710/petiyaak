@@ -236,7 +236,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             @Override
             public void onScanStarted(boolean success) {
                 mDeviceAdapter.clearScanDevice();
-                mDeviceAdapter.notifyDataSetChanged();
+
 
             }
 
@@ -248,7 +248,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             @Override
             public void onScanning(BleDevice bleDevice) {
                 mDeviceAdapter.addDevice(bleDevice);
-                mDeviceAdapter.notifyDataSetChanged();
+
             }
 
             @Override
