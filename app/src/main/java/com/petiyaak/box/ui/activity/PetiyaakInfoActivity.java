@@ -22,6 +22,7 @@ import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.event.BindSucessEvent;
 import com.petiyaak.box.event.ConnectEvent;
+import com.petiyaak.box.event.DelBoxEvent;
 import com.petiyaak.box.event.ShareSucessEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.bean.UserInfo;
@@ -288,6 +289,14 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     public void onShareSucessEvent(ShareSucessEvent event) {
         mPresenter.getUserListByDeviceId(info.getDeviceId(),false);
     }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDelBoxEvent(DelBoxEvent event) {
+        finish();
+    }
+
+
 
     @Override
     public void success(BaseRespone respone) {

@@ -18,6 +18,7 @@ import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
 import com.petiyaak.box.event.ConnectEvent;
+import com.petiyaak.box.event.DelBoxEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.CommonPresenter;
@@ -28,6 +29,7 @@ import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.ICommonView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -84,9 +86,6 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
         mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
         //mPresenter.getFingerprints(BaseApp.userInfo.getId(),info.getDeviceId());
-
-
-
         /**
          *   链接设备
          */
@@ -137,6 +136,7 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
 
         if(respone.contains(ConstantEntiy.ATFDE_OK)) {
             ToastUtils.showToast("delete all finger successful");
+            //mPresenter.delBox();
         }
 
     }
@@ -222,8 +222,8 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
 
     @Override
     public void success(BaseRespone respone) {
-        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
-
+//        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
+        EventBus.getDefault().post(new DelBoxEvent());
     }
 
     @Override

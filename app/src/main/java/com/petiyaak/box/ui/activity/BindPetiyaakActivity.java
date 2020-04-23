@@ -17,12 +17,10 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleScanCallback;
@@ -46,7 +44,6 @@ import com.petiyaak.box.view.IBindView;
 import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
@@ -236,8 +233,6 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             @Override
             public void onScanStarted(boolean success) {
                 mDeviceAdapter.clearScanDevice();
-
-
             }
 
             @Override

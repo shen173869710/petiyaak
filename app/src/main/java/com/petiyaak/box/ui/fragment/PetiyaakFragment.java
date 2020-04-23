@@ -18,6 +18,7 @@ import com.petiyaak.box.adapter.PetiyaakListAdapter;
 import com.petiyaak.box.base.BaseFragment;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.OnDialogClick;
+import com.petiyaak.box.event.DelBoxEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.PetiyaakPresenter;
@@ -184,6 +185,11 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPetiyaakBoxInfo(PetiyaakBoxInfo event) {
+        mPresenter.getOwnerFingerprintsList(false);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDelBoxEvent(DelBoxEvent event) {
         mPresenter.getOwnerFingerprintsList(false);
     }
 

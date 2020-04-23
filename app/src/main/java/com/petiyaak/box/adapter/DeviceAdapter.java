@@ -14,7 +14,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.data.BleDevice;
-import com.google.gson.Gson;
 import com.petiyaak.box.R;
 import com.petiyaak.box.util.LogUtils;
 
@@ -43,12 +42,9 @@ public class DeviceAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
         LinearLayout layout_connected = helper.getView(R.id.layout_connected);
         LinearLayout layout_idle = helper.getView(R.id.layout_idle);
         Button btn_disconnect = helper.getView(R.id.btn_disconnect);
-
         if (!TextUtils.isEmpty(name)) {
             txt_name.setText(name);
         }
-
-
         if (!TextUtils.isEmpty(mac)) {
             txt_mac.setText(mac);
         }
