@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.PetiyaakListAdapter;
 import com.petiyaak.box.base.BaseFragment;
@@ -112,24 +111,24 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
             }
         });
 
-        mAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                DialogUtil.delPetiyaak(mContext, new OnDialogClick() {
-                    @Override
-                    public void onDialogOkClick(String value) {
-                        infos.remove(position);
-                        mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDialogCloseClick(String value) {
-
-                    }
-                });
-                return false;
-            }
-        });
+//        mAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+//                DialogUtil.delPetiyaak(mContext, new OnDialogClick() {
+//                    @Override
+//                    public void onDialogOkClick(String value) {
+//                        infos.remove(position);
+//                        mAdapter.notifyDataSetChanged();
+//                    }
+//
+//                    @Override
+//                    public void onDialogCloseClick(String value) {
+//
+//                    }
+//                });
+//                return false;
+//            }
+//        });
 
     }
 

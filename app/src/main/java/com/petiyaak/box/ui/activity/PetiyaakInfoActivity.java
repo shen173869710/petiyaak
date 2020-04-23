@@ -145,11 +145,10 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         RxView.clicks(infoBlue).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-
-//                if (!TextUtils.isEmpty(info.getBluetoothMac())) {
-//                    ToastUtils.showToast("Bluetooth device already bound");
-//                    return;
-//                }
+                if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+                    ToastUtils.showToast("Bluetooth device already bound");
+                    return;
+                }
                 startActivity(BindPetiyaakActivity.getIntent(PetiyaakInfoActivity.this, info,true));
             }
         });

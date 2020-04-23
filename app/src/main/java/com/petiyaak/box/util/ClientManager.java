@@ -243,7 +243,6 @@ public class ClientManager {
 
     public void onDestroy(){
         ClientManager.getInstance().unRegisterBluetoothStateListener();
-
     }
 
 }
