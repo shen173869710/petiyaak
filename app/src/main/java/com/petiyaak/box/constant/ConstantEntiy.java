@@ -132,4 +132,6 @@ public class ConstantEntiy {
             R.mipmap.head_9,
             R.mipmap.head_10,
     };
+
+    public static final String ATVOL = "ATVOL";
 }

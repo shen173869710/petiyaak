@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleUnnotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.ShareListAdapter;
@@ -40,6 +43,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,6 +53,9 @@ import io.reactivex.functions.Consumer;
  * Created by chenzhaolin on 2019/11/4.
  */
 public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> implements IPetiyaakInfoView {
+
+
+    private final String TAG = "PetiyaakInfoActivity";
 
     @BindView(R.id.main_title_back)
     RelativeLayout mainTitleBack;
@@ -73,9 +80,11 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     TextView infoOption;
     @BindView(R.id.info_share)
     TextView infoShare;
+    @BindView(R.id.petiyaak_info_battery)
+    TextView petiyaakInfoBattery;
+
     @BindView(R.id.info_list)
     RecyclerView infoList;
-
     private PetiyaakBoxInfo info;
     List<UserInfo> userInfos = new ArrayList<>();
     private ShareListAdapter mAdapter;
@@ -116,6 +125,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                     LogUtils.e("PetiyaakInfoActivity", "connect->onResponse" + isConnect);
                     if (isConnect) {
                         info.setItemBlueStatus(true);
+                        startNotify();
                     } else {
                         info.setItemBlueStatus(false);
                     }
@@ -127,12 +137,57 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                         petiyaakInfoStatus.setText(R.string.disconnect);
                         petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
                         mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
-                        ;
                     }
                 }
             });
         }
     }
+
+
+    public void startNotify() {
+        ClientManager.getInstance().notifyData(info.getBluetoothMac(), new BleNotifyResponse() {
+
+            @Override
+            public void onResponse(int code) {
+                LogUtils.e(TAG, "notify onResponse code =  " + code);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ClientManager.getInstance().writeData(info.getBluetoothMac(), ConstantEntiy.ATVOL.getBytes(), new BleWriteResponse() {
+                            @Override
+                            public void onResponse(int code) {
+                                LogUtils.e(TAG, "writeData -- onResponse code= "+code);
+                            }
+                        });
+                    }
+                });
+
+            }
+
+            @Override
+            public void onNotify(UUID service, UUID character, byte[] value) {
+                LogUtils.e(TAG, "notify()  " + new String(value));
+                getRespone(new String(value).trim());
+            }
+        });
+
+    }
+    /**
+     *     获取指纹的返回值
+     * @param respone
+     */
+    private void getRespone(String respone) {
+        if (TextUtils.isEmpty(respone)) {
+            return;
+        }
+        if (respone.contains(ConstantEntiy.ATVOL)) {
+            String[] vol = respone.split("=");
+            if (vol != null && vol.length == 2) {
+                petiyaakInfoBattery.setText(vol[1] + "%");
+            }
+        }
+    }
+
 
     @Override
     public void initListener() {
@@ -318,6 +373,12 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     protected void onDestroy() {
         super.onDestroy();
         if (info != null) {
+            ClientManager.getInstance().unnotifyData(info.getBluetoothMac(), new BleUnnotifyResponse() {
+                @Override
+                public void onResponse(int code) {
+                    LogUtils.e(TAG, "unnotifyData -- onResponse code= "+code);
+                }
+            });
             ClientManager.getInstance().disconnect(info.getBluetoothMac());
             ClientManager.getInstance().unRegisterConnectStatusListener(info.getBluetoothMac());
         }
