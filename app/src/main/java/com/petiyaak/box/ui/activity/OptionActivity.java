@@ -15,8 +15,10 @@ import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
+import com.petiyaak.box.customview.OnDialogClick;
 import com.petiyaak.box.event.ConnectEvent;
 import com.petiyaak.box.event.DelBoxEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
@@ -24,6 +26,7 @@ import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.CommonPresenter;
 import com.petiyaak.box.util.ClientManager;
 import com.petiyaak.box.util.ConnectResponse;
+import com.petiyaak.box.util.DialogUtil;
 import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
@@ -136,7 +139,9 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
 
         if(respone.contains(ConstantEntiy.ATFDE_OK)) {
             ToastUtils.showToast("delete all finger successful");
-            //mPresenter.delBox();
+            mPresenter.delBox(BaseApp.userInfo.getId(),info);
+        }else {
+            ToastUtils.showToast("delete all finger faile "+respone);
         }
 
     }
@@ -182,7 +187,19 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
                 if (NoFastClickUtils.isFastClick()) {
                     return;
                 }
-                write(ConstantEntiy.getATFDEstirng(999).getBytes());
+
+                DialogUtil.delBox(OptionActivity.this, new OnDialogClick() {
+                    @Override
+                    public void onDialogOkClick(String value) {
+                        write(ConstantEntiy.getATFDEstirng(999).getBytes());
+                    }
+
+                    @Override
+                    public void onDialogCloseClick(String value) {
+
+                    }
+                });
+
             }
         });
 
@@ -223,12 +240,14 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
     @Override
     public void success(BaseRespone respone) {
 //        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
+        ToastUtils.showToast("unbind device succssful");
         EventBus.getDefault().post(new DelBoxEvent());
+        finish();
     }
 
     @Override
     public void fail(Throwable error, Integer code, String msg) {
-
+        ToastUtils.showToast("unbind device faile");
     }
 
     public void write(byte[] value) {

@@ -26,8 +26,8 @@
         >
         <ImageView
             android:id="@+id/petiyaak_blue_status"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_centerVertical="true"
             />
         <TextView
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/petiyaak_blue_status"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="2dp"
             android:textColor="@color/black"
-            android:textSize="@dimen/size_14"></TextView>
+            android:textSize="@dimen/size_12"></TextView>
     </RelativeLayout>
 </LinearLayout>

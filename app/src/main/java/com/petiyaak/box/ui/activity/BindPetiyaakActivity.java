@@ -325,13 +325,19 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     public void bindSuccess(BaseRespone respone) {
         BindDeviceRespone bRespone = (BindDeviceRespone)respone.data;
         if (bRespone != null) {
-            info.setBluetoothName(bRespone.getBluetoothName());
-            info.setItemBlueStatus(true);
-            info.setBluetoothMac(bRespone.getBluetoothMac());
-            info.setDeviceName(bRespone.getDeviceName());
-            info.setDeviceId(bRespone.getDeviceId());
-            EventBus.getDefault().post(new BindSucessEvent(info));
-            finish();
+            if (!TextUtils.isEmpty(bluetoothName) && bluetoothName.equals(bRespone.getBluetoothName())) {
+                info.setBluetoothName(bRespone.getBluetoothName());
+                info.setItemBlueStatus(true);
+                info.setBluetoothMac(bRespone.getBluetoothMac());
+                info.setDeviceName(bRespone.getDeviceName());
+                info.setDeviceId(bRespone.getDeviceId());
+                EventBus.getDefault().post(new BindSucessEvent(info));
+                finish();
+            }else {
+                ToastUtils.showToast("The device has been bound");
+            }
+        }else {
+            ToastUtils.showToast("The device has been bound");
         }
 
     }

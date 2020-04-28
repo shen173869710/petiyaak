@@ -459,6 +459,13 @@ Observable<BaseRespone<LoginRespone>> cancelShareDevice(@FieldMap Map<String, Ob
 @FormUrlEncoded
 @POST("/api/device/getUserListByDeviceId")
 Observable<BaseRespone<List<UserInfo>>> getUserListByDeviceId(@FieldMap Map<String, Object> map);
+
+
+    @FormUrlEncoded
+    @POST("/api/device/deleteById")
+    Observable<BaseRespone> deleteById(@FieldMap Map<String, Object> map);
+
+
 }
 
 

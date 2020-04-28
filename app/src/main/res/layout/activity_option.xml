@@ -28,7 +28,7 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
-        android:text="delete box"
+        android:text="unbind user petiyaak_box"
         android:textColor="@color/white"
         android:textSize="@dimen/size_16"
         android:layout_gravity="center_horizontal"

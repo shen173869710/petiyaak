@@ -240,9 +240,6 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
             }
         });
 
-
-
-
         RxView.clicks(infoFinger).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
@@ -348,6 +345,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDelBoxEvent(DelBoxEvent event) {
+        LogUtils.e(TAG, "删除设备成功");
         finish();
     }
 
