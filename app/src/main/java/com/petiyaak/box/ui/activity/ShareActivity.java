@@ -128,10 +128,12 @@ public class ShareActivity extends BaseActivity<ShareUserPresenter> implements I
         if (size > 0) {
             Iterator<UserInfo> it = list.iterator();
             while (it.hasNext()){
-                int id = BaseApp.userInfo.getId();
-                UserInfo user = it.next();
-                if (id == user.getId()) {
-                    it.remove();
+                if (BaseApp.userInfo != null) {
+                    int id = BaseApp.userInfo.getId();
+                    UserInfo user = it.next();
+                    if (id == user.getId()) {
+                        it.remove();
+                    }
                 }
             }
             userInfos.clear();

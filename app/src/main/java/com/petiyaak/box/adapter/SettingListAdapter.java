@@ -31,7 +31,12 @@ public class SettingListAdapter extends BaseMultiItemQuickAdapter<SettingItem, B
     protected void convert(@NonNull BaseViewHolder helper, SettingItem item) {
         switch (helper.getItemViewType()) {
             case 0:
-                helper.setImageResource(R.id.setting_icon, ConstantEntiy.USER_HEAD_ID[BaseApp.userInfo.getAvatarid()]);
+                int id = 0;
+                if (BaseApp.userInfo.getAvatarid() > 10) {
+                    id = 0;
+                }
+                id = BaseApp.userInfo.getAvatarid();
+                helper.setImageResource(R.id.setting_icon, ConstantEntiy.USER_HEAD_ID[id]);
                 helper.setText(R.id.setting_username,BaseApp.userInfo.getUsername());
                 helper.setText(R.id.setting_phone,BaseApp.userInfo.getPhonenumber()+"");
                 break;

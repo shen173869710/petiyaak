@@ -84,7 +84,7 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
     @Override
     public void initData() {
         mainTitleBack.setVisibility(View.VISIBLE);
-        mainTitleTitle.setText("option box");
+        mainTitleTitle.setText("operation box");
         mainTitleRight.setVisibility(View.VISIBLE);
         mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
