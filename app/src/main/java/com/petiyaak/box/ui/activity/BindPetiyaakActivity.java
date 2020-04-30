@@ -332,6 +332,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
                 info.setDeviceName(bRespone.getDeviceName());
                 info.setDeviceId(bRespone.getDeviceId());
                 EventBus.getDefault().post(new BindSucessEvent(info));
+                ToastUtils.showToast("device bound successful");
                 finish();
             }else {
                 ToastUtils.showToast("The device has been bound");
