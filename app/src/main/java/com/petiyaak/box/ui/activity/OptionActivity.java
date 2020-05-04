@@ -130,13 +130,10 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
         }
         if (respone.contains(ConstantEntiy.ATLKO_OK)) {
             ToastUtils.showToast("open box successful， code "+respone);
-        }else {
-            ToastUtils.showToast("open box error， error code "+respone);
-        }
-
-
-        if(respone.contains(ConstantEntiy.ATFDE_OK)) {
+        }else if (respone.contains(ConstantEntiy.ATFDE_OK)) {
             ToastUtils.showToast("delete all finger successful");
+        }else {
+            ToastUtils.showToast("option box error， error code "+respone);
         }
 
     }
