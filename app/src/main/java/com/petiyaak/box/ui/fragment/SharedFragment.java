@@ -68,7 +68,7 @@ public class SharedFragment extends BaseFragment <ShareListPresenter> implements
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (view.getId() == R.id.share_submit) {
-                    startActivity(OptionActivity.startIntent(mContext,infos.get(position)));
+                    startActivity(OptionActivity.startIntent(mContext,infos.get(position),false));
                 }else if (view.getId() == R.id.share_bind) {
                     startActivity(FingerActivity.startIntent(mContext,infos.get(position), BaseApp.userInfo,false));
                 }

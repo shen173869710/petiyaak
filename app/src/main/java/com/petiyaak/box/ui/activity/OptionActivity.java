@@ -67,11 +67,12 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
 
 
     private final String TAG = "OptionActivit";
+    private boolean isOwner = false;
 
-
-    public static Intent startIntent(Context content, PetiyaakBoxInfo box) {
+    public static Intent startIntent(Context content, PetiyaakBoxInfo box, boolean isOwner) {
         Intent intent = new Intent(content, OptionActivity.class);
         intent.putExtra(ConstantEntiy.INTENT_BOX, box);
+        intent.putExtra(ConstantEntiy.INTENT_OWNER, isOwner);
         return intent;
     }
 
@@ -88,6 +89,7 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
         mainTitleRight.setVisibility(View.VISIBLE);
         mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
+        isOwner = getIntent().getBooleanExtra(ConstantEntiy.INTENT_OWNER, false);
         //mPresenter.getFingerprints(BaseApp.userInfo.getId(),info.getDeviceId());
         /**
          *   链接设备
@@ -120,6 +122,13 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
                 }
             });
         }
+
+
+        if (isOwner) {
+            settingDel.setVisibility(View.VISIBLE);
+        }else {
+            settingDel.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -132,16 +141,11 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
         }
         if (respone.contains(ConstantEntiy.ATLKO_OK)) {
             ToastUtils.showToast("open box successful， code "+respone);
-        }else {
-            ToastUtils.showToast("open box error， error code "+respone);
-        }
-
-
-        if(respone.contains(ConstantEntiy.ATFDE_OK)) {
+        }else if(respone.contains(ConstantEntiy.ATFDE_OK)) {
             ToastUtils.showToast("delete all finger successful");
             mPresenter.delBox(BaseApp.userInfo.getId(),info);
         }else {
-            ToastUtils.showToast("delete all finger faile "+respone);
+            ToastUtils.showToast("option box error， error code "+respone);
         }
 
     }

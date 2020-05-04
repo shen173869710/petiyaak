@@ -10,6 +10,7 @@ public class ConstantEntiy {
     public static final String INTENT_BOX = "intent_box";
     public static final String INTENT_USER = "intent_user";
     public static final String INTENT_BIND = "intent_bind";
+    public static final String INTENT_OWNER = "intent_owner";
     /**
      *  开始注册指纹
      */
