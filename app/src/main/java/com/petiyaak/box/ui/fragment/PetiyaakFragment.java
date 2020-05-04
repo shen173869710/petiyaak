@@ -13,17 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.PetiyaakListAdapter;
 import com.petiyaak.box.base.BaseFragment;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.OnDialogClick;
+import com.petiyaak.box.event.BindSucessEvent;
+import com.petiyaak.box.event.DelBoxEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.PetiyaakPresenter;
 import com.petiyaak.box.ui.activity.PetiyaakInfoActivity;
 import com.petiyaak.box.util.DialogUtil;
+import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.view.IPetiyaakView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -112,24 +114,24 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
             }
         });
 
-        mAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                DialogUtil.delPetiyaak(mContext, new OnDialogClick() {
-                    @Override
-                    public void onDialogOkClick(String value) {
-                        infos.remove(position);
-                        mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDialogCloseClick(String value) {
-
-                    }
-                });
-                return false;
-            }
-        });
+//        mAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+//                DialogUtil.delPetiyaak(mContext, new OnDialogClick() {
+//                    @Override
+//                    public void onDialogOkClick(String value) {
+//                        infos.remove(position);
+//                        mAdapter.notifyDataSetChanged();
+//                    }
+//
+//                    @Override
+//                    public void onDialogCloseClick(String value) {
+//
+//                    }
+//                });
+//                return false;
+//            }
+//        });
 
     }
 
@@ -156,7 +158,7 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
     @Override
     public void success(BaseRespone respone) {
         List<PetiyaakBoxInfo> list = (List<PetiyaakBoxInfo>)respone.data;
-        if (list != null && list.size() > 0) {
+        if (list != null ) {
             infos.clear();
             infos.add(new PetiyaakBoxInfo(-1));
             infos.addAll(list);
@@ -187,5 +189,19 @@ public class PetiyaakFragment extends BaseFragment<PetiyaakPresenter> implements
     public void onPetiyaakBoxInfo(PetiyaakBoxInfo event) {
         mPresenter.getOwnerFingerprintsList(false);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDelBoxEvent(DelBoxEvent event) {
+        LogUtils.e("petiyaakfragment", "重新请求设备列表");
+        mPresenter.getOwnerFingerprintsList(false);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBindSucessEvent(BindSucessEvent event) {
+        LogUtils.e("petiyaakfragment", "重新请求设备列表");
+        mPresenter.getOwnerFingerprintsList(false);
+    }
+
 
 }

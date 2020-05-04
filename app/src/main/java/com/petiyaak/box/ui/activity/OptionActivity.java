@@ -15,19 +15,24 @@ import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.base.BaseActivity;
+import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.customview.MClearEditText;
+import com.petiyaak.box.customview.OnDialogClick;
 import com.petiyaak.box.event.ConnectEvent;
+import com.petiyaak.box.event.DelBoxEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.CommonPresenter;
 import com.petiyaak.box.util.ClientManager;
 import com.petiyaak.box.util.ConnectResponse;
+import com.petiyaak.box.util.DialogUtil;
 import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.ICommonView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -79,14 +84,11 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
     @Override
     public void initData() {
         mainTitleBack.setVisibility(View.VISIBLE);
-        mainTitleTitle.setText("option box");
+        mainTitleTitle.setText("operation box");
         mainTitleRight.setVisibility(View.VISIBLE);
         mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
         //mPresenter.getFingerprints(BaseApp.userInfo.getId(),info.getDeviceId());
-
-
-
         /**
          *   链接设备
          */
@@ -130,10 +132,16 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
         }
         if (respone.contains(ConstantEntiy.ATLKO_OK)) {
             ToastUtils.showToast("open box successful， code "+respone);
-        }else if (respone.contains(ConstantEntiy.ATFDE_OK)) {
-            ToastUtils.showToast("delete all finger successful");
         }else {
-            ToastUtils.showToast("option box error， error code "+respone);
+            ToastUtils.showToast("open box error， error code "+respone);
+        }
+
+
+        if(respone.contains(ConstantEntiy.ATFDE_OK)) {
+            ToastUtils.showToast("delete all finger successful");
+            mPresenter.delBox(BaseApp.userInfo.getId(),info);
+        }else {
+            ToastUtils.showToast("delete all finger faile "+respone);
         }
 
     }
@@ -179,7 +187,19 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
                 if (NoFastClickUtils.isFastClick()) {
                     return;
                 }
-                write(ConstantEntiy.getATFDEstirng(999).getBytes());
+
+                DialogUtil.delBox(OptionActivity.this, new OnDialogClick() {
+                    @Override
+                    public void onDialogOkClick(String value) {
+                        write(ConstantEntiy.getATFDEstirng(999).getBytes());
+                    }
+
+                    @Override
+                    public void onDialogCloseClick(String value) {
+
+                    }
+                });
+
             }
         });
 
@@ -219,13 +239,15 @@ public class OptionActivity extends BaseActivity <CommonPresenter> implements IC
 
     @Override
     public void success(BaseRespone respone) {
-        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
-
+//        PetiyaakBoxInfo boxInfo = (PetiyaakBoxInfo)respone.getData();
+        ToastUtils.showToast("unbind device succssful");
+        EventBus.getDefault().post(new DelBoxEvent());
+        finish();
     }
 
     @Override
     public void fail(Throwable error, Integer code, String msg) {
-
+        ToastUtils.showToast("unbind device faile");
     }
 
     public void write(byte[] value) {

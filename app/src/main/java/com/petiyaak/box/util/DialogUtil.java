@@ -101,4 +101,19 @@ public class DialogUtil {
         content.hideEidt = true;
         AddUserDialog.show(context, content, onDialogClick);
     }
+
+
+
+    /**
+     *   删除一个设备
+     */
+
+    public static void delBox(Context context, OnDialogClick onDialogClick) {
+        DialogContent content = new DialogContent();
+        content.desc = "Delete the user's device";
+        content.ok = "Ok";
+        content.cancle = "No";
+        content.hideEidt = true;
+        AddUserDialog.show(context, content, onDialogClick);
+    }
 }

@@ -57,7 +57,7 @@
             android:layout_width="60dp"
             android:layout_height="30dp"
             android:background="@drawable/login_button_sel"
-            android:text="option"
+            android:text="operation"
             android:textSize="@dimen/size_12"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"

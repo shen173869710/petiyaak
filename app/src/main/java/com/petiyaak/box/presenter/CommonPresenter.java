@@ -114,4 +114,30 @@ public class CommonPresenter extends BasePresenter<ICommonView>{
                 });
     }
 
+
+    /**
+     *    用户删除一个设备
+     */
+    public void delBox(int userId, PetiyaakBoxInfo info) {
+        TreeMap<String, Object> treeMap = new TreeMap<>();
+        treeMap.put("userId",userId);
+        treeMap.put("deviceId",info.getDeviceId());
+        doHttpTask(getApiService().deleteById(treeMap),
+                new HttpManager.OnResultListener() {
+                    @Override
+                    public void onSuccess(BaseRespone respone) {
+                        if (respone != null && respone.isOk()) {
+                            getBaseView().success(respone);
+                        }else{
+                            getBaseView().fail(null,-1, respone.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable error, Integer code,String msg) {
+                        getBaseView().fail(error,code, msg);
+                    }
+                });
+    }
+
 }
