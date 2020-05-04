@@ -271,9 +271,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                     ToastUtils.showToast("No Bluetooth device");
                     return;
                 }
-                Intent intent = new Intent(PetiyaakInfoActivity.this, OptionActivity.class);
-                intent.putExtra(ConstantEntiy.INTENT_BOX, info);
-                startActivity(intent);
+                startActivity(OptionActivity.startIntent(PetiyaakInfoActivity.this,info,true ));
             }
         });
 
