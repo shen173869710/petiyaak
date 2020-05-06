@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.petiyaak.box.base.BaseActivity;
 import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.event.BindSucessEvent;
+import com.petiyaak.box.event.DialogDIsmissEvent;
 import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.model.respone.BindDeviceRespone;
@@ -44,6 +46,8 @@ import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IBindView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +113,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             public void onDisConnect(BluetoothDevice bleDevice) {
                 ClientManager.getInstance().disconnect(bleDevice.getAddress());
                 mDeviceAdapter.clearScanDevice();
-                startScan();
+
             }
 
             @Override
@@ -117,7 +121,6 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
             }
         });
         bluelist.setAdapter(mDeviceAdapter);
-
     }
 
     @Override
@@ -368,9 +371,8 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDialogDIsmissEvent(DialogDIsmissEvent  event) {
+        ClientManager.getInstance().getClient().stopSearch();
     }
 }

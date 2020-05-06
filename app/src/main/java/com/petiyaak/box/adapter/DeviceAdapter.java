@@ -83,10 +83,13 @@ public class DeviceAdapter extends BaseQuickAdapter<BluetoothDevice, BaseViewHol
 
 
     public void addDevice(BluetoothDevice bleDevice) {
+        LogUtils.e("adapter", "addDevice");
         if(bleDevice == null){
             return;
         }
-        removeDevice(bleDevice);
+        if (removeDevice(bleDevice)) {
+            return;
+        }
         String name = bleDevice.getName();
         if(!TextUtils.isEmpty(name) && name.contains("yaak")) {
             getData().add(0,bleDevice);
@@ -95,20 +98,16 @@ public class DeviceAdapter extends BaseQuickAdapter<BluetoothDevice, BaseViewHol
 
     }
 
-    public void removeDevice(BluetoothDevice bleDevice) {
+    public boolean removeDevice(BluetoothDevice bleDevice) {
         int has = -1;
         for (int i = 0; i < getData().size(); i++) {
             BluetoothDevice device = getData().get(i);
-
             String name = device.getName();
-
             if (!TextUtils.isEmpty(name) && name.equals(bleDevice.getName())) {
-                has = i;
+                return true;
             }
         }
-        if (has >= 0) {
-            getData().remove(has);
-        }
+        return false;
     }
 
 

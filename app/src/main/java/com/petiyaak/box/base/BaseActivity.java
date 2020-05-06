@@ -31,7 +31,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends RxAppCompatA
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
         EventBus.getDefault().register(this);
-        BaseApp.activities.add(this);
+       // BaseApp.activities.add(this);
         ButterKnife.bind(this);
         mPresenter = createPresenter();
         if (mPresenter != null) {

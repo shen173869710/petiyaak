@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.petiyaak.box.R;
+import com.petiyaak.box.event.DialogDIsmissEvent;
+import com.petiyaak.box.util.LogUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 
 public class LoadingDialog extends Dialog {
@@ -86,6 +90,7 @@ public class LoadingDialog extends Dialog {
                 mAnimationDrawable.stop();
             }
         }
+        EventBus.getDefault().post(new DialogDIsmissEvent());
     }
 
 }
