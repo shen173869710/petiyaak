@@ -85,7 +85,7 @@ public class ClientManager {
             LogUtils.e(TAG, "设备未连接 开始链接");
             BleConnectOptions options = new BleConnectOptions.Builder()
                     .setConnectRetry(3)
-                    .setConnectTimeout(20000)
+                    .setConnectTimeout(10000)
                     .setServiceDiscoverRetry(3)
                     .setServiceDiscoverTimeout(10000)
                     .build();
@@ -225,7 +225,7 @@ public class ClientManager {
         if (mServerId == null || mReadUuid == null || mWriteUuid == null) {
             BleConnectOptions options = new BleConnectOptions.Builder()
                     .setConnectRetry(3)
-                    .setConnectTimeout(20000)
+                    .setConnectTimeout(10000)
                     .setServiceDiscoverRetry(3)
                     .setServiceDiscoverTimeout(10000)
                     .build();

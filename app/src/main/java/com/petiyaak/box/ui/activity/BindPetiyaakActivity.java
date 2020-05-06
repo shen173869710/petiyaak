@@ -40,6 +40,7 @@ import com.petiyaak.box.model.respone.BindDeviceRespone;
 import com.petiyaak.box.presenter.BindPresenter;
 import com.petiyaak.box.util.ClientManager;
 import com.petiyaak.box.util.ConnectResponse;
+import com.petiyaak.box.util.LogUtils;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IBindView;
@@ -278,12 +279,14 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
         ClientManager.getInstance().connectDevice(bleDevice.getAddress(), new ConnectResponse() {
             @Override
             public void onResponse(boolean isConnect) {
+                LogUtils.e("bind",  "isConnect = " + isConnect);
                 if (isConnect) {
                     bluetoothName = bleDevice.getName();
                     bluetoothMac = bleDevice.getAddress();
                     mDeviceAdapter.addDevice(bleDevice);
                     mDeviceAdapter.notifyDataSetChanged();
                     bluelist.scrollToPosition(0);
+
                 }else {
                     Toast.makeText(BindPetiyaakActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();
                 }
