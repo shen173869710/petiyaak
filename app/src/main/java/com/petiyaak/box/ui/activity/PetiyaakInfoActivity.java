@@ -102,6 +102,9 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         mainTitleRight.setVisibility(View.VISIBLE);
         mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
 
+
+       // info.setBluetoothMac("58:93:D8:49:1D:54");
+
         petiyaakInfoName.setText(info.getDeviceName());
         if (info.isItemBlueStatus()) {
             petiyaakInfoStatus.setText(R.string.connect);
