@@ -30,7 +30,6 @@ public class DeviceAdapter extends BaseQuickAdapter<BluetoothDevice, BaseViewHol
     @Override
     protected void convert(@NonNull BaseViewHolder helper, BluetoothDevice item) {
         boolean isConnected = ClientManager.getInstance().getConnectStatus(item.getAddress());
-
         String name = item.getName();
         String mac = item.getAddress();
         LogUtils.e("Adapter", "name = "+ name + "    mac ="+mac);
@@ -83,7 +82,6 @@ public class DeviceAdapter extends BaseQuickAdapter<BluetoothDevice, BaseViewHol
 
 
     public void addDevice(BluetoothDevice bleDevice) {
-        LogUtils.e("adapter", "addDevice");
         if(bleDevice == null){
             return;
         }
