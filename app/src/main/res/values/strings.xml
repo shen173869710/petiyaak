@@ -3,7 +3,7 @@
 
 
     <string name="login_submit">Login</string>
-    <string name="login_register">Register</string>
+    <string name="login_register">Create a new acccount</string>
     <string name="main_tab_1">Petiyaak lock</string>
     <string name="main_tab_2">Shared</string>
     <string name="main_tab_3">History</string>

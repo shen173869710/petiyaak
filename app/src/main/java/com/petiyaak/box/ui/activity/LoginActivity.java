@@ -14,6 +14,7 @@ import com.petiyaak.box.model.bean.UserInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.presenter.LoginPresenter;
 import com.petiyaak.box.util.NoFastClickUtils;
+import com.petiyaak.box.util.SpUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.ILoginView;
 
@@ -44,6 +45,16 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
 
     @Override
     public void initData() {
+        String account = SpUtils.getInstance().getString(SpUtils.SAVE_ACCOUNT);
+        String pwd = SpUtils.getInstance().getString(SpUtils.SAVE_PWD);
+
+        if (!TextUtils.isEmpty(account)) {
+            loginName.setText(account);
+        }
+
+        if (!TextUtils.isEmpty(pwd)) {
+            loginPwd.setText(pwd);
+        }
 
     }
 
@@ -94,6 +105,9 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
     public void loginSuccess(BaseRespone respone) {
         BaseApp.userInfo = (UserInfo) respone.data;
         if (BaseApp.userInfo != null) {
+
+            SpUtils.getInstance().putString(SpUtils.SAVE_ACCOUNT, loginName.getText().toString().trim());
+            SpUtils.getInstance().putString(SpUtils.SAVE_PWD, loginPwd.getText().toString().trim());
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }else {

@@ -4,12 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/login_layout"
+        android:background="@mipmap/login_bg"
+        />
     <LinearLayout
+        android:id="@+id/login_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
         android:padding="50dp"
+        android:background="@color/white"
         android:gravity="center_horizontal"
         >
         <com.petiyaak.box.customview.MClearEditText
