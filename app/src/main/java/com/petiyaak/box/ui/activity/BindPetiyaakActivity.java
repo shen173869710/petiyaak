@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
@@ -350,7 +349,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     public void bindSuccess(BaseRespone respone) {
         BindDeviceRespone bRespone = (BindDeviceRespone)respone.data;
         if (bRespone != null) {
-            if (!TextUtils.isEmpty(bluetoothName) && bluetoothName.equals(bRespone.getBluetoothName())) {
+            if (!TextUtils.isEmpty(info.getDeviceName()) && info.getDeviceName().equals(bRespone.getDeviceName())) {
                 info.setBluetoothName(bRespone.getBluetoothName());
                 info.setItemBlueStatus(true);
                 info.setBluetoothMac(bRespone.getBluetoothMac());
