@@ -4,7 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,16 +17,15 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.clj.fastble.BleManager;
-import com.clj.fastble.callback.BleGattCallback;
-import com.clj.fastble.callback.BleScanCallback;
-import com.clj.fastble.data.BleDevice;
-import com.clj.fastble.exception.BleException;
-import com.clj.fastble.scan.BleScanRuleConfig;
+
+import com.inuker.bluetooth.library.search.SearchRequest;
+import com.inuker.bluetooth.library.search.SearchResult;
+import com.inuker.bluetooth.library.search.response.SearchResponse;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.DeviceAdapter;
@@ -38,12 +37,17 @@ import com.petiyaak.box.model.bean.PetiyaakBoxInfo;
 import com.petiyaak.box.model.respone.BaseRespone;
 import com.petiyaak.box.model.respone.BindDeviceRespone;
 import com.petiyaak.box.presenter.BindPresenter;
+import com.petiyaak.box.util.ClientManager;
+import com.petiyaak.box.util.ConnectResponse;
 import com.petiyaak.box.util.NoFastClickUtils;
 import com.petiyaak.box.util.ToastUtils;
 import com.petiyaak.box.view.IBindView;
+
 import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 
@@ -63,7 +67,7 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     @BindView(R.id.bind_bluetooth)
     TextView bindBluetooth;
 
-    private List<BleDevice> data = new ArrayList<>();
+    private List<BluetoothDevice> data = new ArrayList<>();
     private DeviceAdapter mDeviceAdapter;
     private PetiyaakBoxInfo info;
 
@@ -92,33 +96,24 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
         mainTitleTitle.setText("Bind Petiyaak box");
         mainTitleRight.setVisibility(View.VISIBLE);
 
-        BleManager.getInstance().init(getApplication());
-        BleManager.getInstance()
-                .enableLog(true)
-                .setReConnectCount(1, 5000)
-                .setOperateTimeout(5000);
-
         bluelist.setLayoutManager(new LinearLayoutManager(this));
         mDeviceAdapter = new DeviceAdapter(data);
+
         mDeviceAdapter.setOnDeviceClickListener(new DeviceAdapter.OnDeviceClickListener() {
             @Override
-            public void onConnect(BleDevice bleDevice) {
-                if (!BleManager.getInstance().isConnected(bleDevice)) {
-                    BleManager.getInstance().cancelScan();
+            public void onConnect(BluetoothDevice bleDevice) {
                     connect(bleDevice);
-                }
             }
 
             @Override
-            public void onDisConnect(BleDevice bleDevice) {
-                if (BleManager.getInstance().isConnected(bleDevice)) {
-                    BleManager.getInstance().disconnect(bleDevice);
-                }
+            public void onDisConnect(BluetoothDevice bleDevice) {
+                ClientManager.getInstance().disconnect(bleDevice.getAddress());
+                mDeviceAdapter.clearScanDevice();
+                startScan();
             }
 
             @Override
-            public void onDetail(BleDevice bleDevice) {
-
+            public void onDetail(BluetoothDevice bleDevice) {
             }
         });
         bluelist.setAdapter(mDeviceAdapter);
@@ -229,25 +224,31 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
 
     private void startScan() {
         showDialog();
-        BleManager.getInstance().scan(new BleScanCallback() {
+        SearchRequest request = new SearchRequest.Builder()
+                .searchBluetoothLeDevice(3000, 3)   // 先扫BLE设备3次，每次3s
+                .searchBluetoothClassicDevice(5000) // 再扫经典蓝牙5s
+                .searchBluetoothLeDevice(2000)      // 再扫BLE设备2s
+                .build();
+        ClientManager.getInstance().getClient().search(request, new SearchResponse() {
             @Override
-            public void onScanStarted(boolean success) {
-                mDeviceAdapter.clearScanDevice();
-            }
-
-            @Override
-            public void onLeScan(BleDevice bleDevice) {
-                super.onLeScan(bleDevice);
-            }
-
-            @Override
-            public void onScanning(BleDevice bleDevice) {
-                mDeviceAdapter.addDevice(bleDevice);
+            public void onSearchStarted() {
 
             }
 
             @Override
-            public void onScanFinished(List<BleDevice> scanResultList) {
+            public void onDeviceFounded(SearchResult result) {
+//                Beacon beacon = new Beacon(device.scanRecord);
+//                BluetoothLog.v(String.format("beacon for %s\n%s", device.getAddress(), beacon.toString()));
+                mDeviceAdapter.addDevice(result.device);
+            }
+
+            @Override
+            public void onSearchStopped() {
+                dismissDialog();
+            }
+
+            @Override
+            public void onSearchCanceled() {
                 dismissDialog();
             }
         });
@@ -256,11 +257,11 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
 
     private void setScanRule() {
         boolean isAutoConnect = false;
-        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
-                .setAutoConnect(isAutoConnect)      // 连接时的autoConnect参数，可选，默认false
-                .setScanTimeOut(10000)              // 扫描超时时间，可选，默认10秒
-                .build();
-        BleManager.getInstance().initScanRule(scanRuleConfig);
+//        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
+//                .setAutoConnect(isAutoConnect)      // 连接时的autoConnect参数，可选，默认false
+//                .setScanTimeOut(10000)              // 扫描超时时间，可选，默认10秒
+//                .build();
+//        BleManager.getInstance().initScanRule(scanRuleConfig);
     }
 
     private boolean checkGPSIsOpen() {
@@ -270,44 +271,62 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
         return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
     }
 
-    private void connect(final BleDevice bleDevice) {
-        BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
+    private void connect(final BluetoothDevice bleDevice) {
+        showDialog();
+        ClientManager.getInstance().connectDevice(bleDevice.getAddress(), new ConnectResponse() {
             @Override
-            public void onStartConnect() {
-                showDialog();
-            }
-            @Override
-            public void onConnectFail(BleDevice bleDevice, BleException exception) {
-                dismissDialog();
-                Toast.makeText(BindPetiyaakActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                dismissDialog();
-                bluetoothName = bleDevice.getName();
-                bluetoothMac = bleDevice.getMac();
-                mDeviceAdapter.addDevice(bleDevice);
-                mDeviceAdapter.notifyDataSetChanged();
-                bluelist.scrollToPosition(0);
-            }
-
-            @Override
-            public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                dismissDialog();
-                mDeviceAdapter.removeDevice(bleDevice);
-                mDeviceAdapter.notifyDataSetChanged();
-                if (isActiveDisConnected) {
-                    Toast.makeText(BindPetiyaakActivity.this, getString(R.string.active_disconnected), Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(BindPetiyaakActivity.this, getString(R.string.disconnected), Toast.LENGTH_LONG).show();
-                    /**
-                     *   链接成功
-                     */
+            public void onResponse(boolean isConnect) {
+                if (isConnect) {
+                    bluetoothName = bleDevice.getName();
+                    bluetoothMac = bleDevice.getAddress();
+                    mDeviceAdapter.addDevice(bleDevice);
+                    mDeviceAdapter.notifyDataSetChanged();
+                    bluelist.scrollToPosition(0);
+                }else {
+                    Toast.makeText(BindPetiyaakActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();
                 }
-
+                dismissDialog();
             }
         });
+
+
+//        BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
+//            @Override
+//            public void onStartConnect() {
+//                showDialog();
+//            }
+//            @Override
+//            public void onConnectFail(BleDevice bleDevice, BleException exception) {
+//                dismissDialog();
+//                Toast.makeText(BindPetiyaakActivity.this, getString(R.string.connect_fail)+exception.getDescription(), Toast.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
+//                dismissDialog();
+//                bluetoothName = bleDevice.getName();
+//                bluetoothMac = bleDevice.getMac();
+//                mDeviceAdapter.addDevice(bleDevice);
+//                mDeviceAdapter.notifyDataSetChanged();
+//                bluelist.scrollToPosition(0);
+//            }
+//
+//            @Override
+//            public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
+//                dismissDialog();
+//                mDeviceAdapter.removeDevice(bleDevice);
+//                mDeviceAdapter.notifyDataSetChanged();
+//                if (isActiveDisConnected) {
+//                    Toast.makeText(BindPetiyaakActivity.this, getString(R.string.active_disconnected), Toast.LENGTH_LONG).show();
+//                } else {
+//                    Toast.makeText(BindPetiyaakActivity.this, getString(R.string.disconnected), Toast.LENGTH_LONG).show();
+//                    /**
+//                     *   链接成功
+//                     */
+//                }
+//
+//            }
+//        });
     }
 
     @Override
@@ -346,5 +365,12 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     @Override
     public void bindFail(Throwable error, Integer code, String msg) {
         ToastUtils.showToast(msg+"");
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

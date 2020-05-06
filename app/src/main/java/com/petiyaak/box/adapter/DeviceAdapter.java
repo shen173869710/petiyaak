@@ -1,5 +1,6 @@
 package com.petiyaak.box.adapter;
 
+import android.bluetooth.BluetoothDevice;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,28 +13,26 @@ import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.clj.fastble.BleManager;
-import com.clj.fastble.data.BleDevice;
 import com.petiyaak.box.R;
+import com.petiyaak.box.util.ClientManager;
 import com.petiyaak.box.util.LogUtils;
 
 import java.util.List;
 
 
-public class DeviceAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
+public class DeviceAdapter extends BaseQuickAdapter<BluetoothDevice, BaseViewHolder> {
 
 
-    public DeviceAdapter(@Nullable List<BleDevice> data) {
+    public DeviceAdapter(@Nullable List<BluetoothDevice> data) {
         super(R.layout.adapter_device, data);
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder helper, BleDevice item) {
-        boolean isConnected = BleManager.getInstance().isConnected(item);
+    protected void convert(@NonNull BaseViewHolder helper, BluetoothDevice item) {
+        boolean isConnected = ClientManager.getInstance().getConnectStatus(item.getAddress());
 
         String name = item.getName();
-        String mac = item.getMac();
-        int rssi = item.getRssi();
+        String mac = item.getAddress();
         LogUtils.e("Adapter", "name = "+ name + "    mac ="+mac);
         ImageView img_blue = helper.getView(R.id.img_blue);
         TextView txt_name = helper.getView(R.id.txt_name);
@@ -83,7 +82,7 @@ public class DeviceAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
     }
 
 
-    public void addDevice(BleDevice bleDevice) {
+    public void addDevice(BluetoothDevice bleDevice) {
         if(bleDevice == null){
             return;
         }
@@ -96,12 +95,15 @@ public class DeviceAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
 
     }
 
-    public void removeDevice(BleDevice bleDevice) {
+    public void removeDevice(BluetoothDevice bleDevice) {
         int has = -1;
         for (int i = 0; i < getData().size(); i++) {
-            BleDevice device = getData().get(i);
-            if (bleDevice.getKey().equals(device.getKey())) {
-               has = i;
+            BluetoothDevice device = getData().get(i);
+
+            String name = device.getName();
+
+            if (!TextUtils.isEmpty(name) && name.equals(bleDevice.getName())) {
+                has = i;
             }
         }
         if (has >= 0) {
@@ -116,11 +118,11 @@ public class DeviceAdapter extends BaseQuickAdapter<BleDevice, BaseViewHolder> {
     }
 
     public interface OnDeviceClickListener {
-        void onConnect(BleDevice bleDevice);
+        void onConnect(BluetoothDevice bleDevice);
 
-        void onDisConnect(BleDevice bleDevice);
+        void onDisConnect(BluetoothDevice bleDevice);
 
-        void onDetail(BleDevice bleDevice);
+        void onDetail(BluetoothDevice bleDevice);
     }
 
     private OnDeviceClickListener mListener;

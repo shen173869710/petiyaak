@@ -137,7 +137,7 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.1'
     implementation 'com.kyleduo.switchbutton:library:2.0.0'
     implementation 'me.drakeet.support:toastcompat:1.1.0'
-    implementation 'com.clj.fastble:FastBleLib:2.3.4'
+//    implementation 'com.clj.fastble:FastBleLib:2.3.4'
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
     implementation 'com.white:progressview:1.0.1'
 
