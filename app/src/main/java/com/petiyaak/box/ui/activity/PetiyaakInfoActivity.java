@@ -98,7 +98,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
     public void initData() {
         info = (PetiyaakBoxInfo) getIntent().getSerializableExtra(ConstantEntiy.INTENT_BOX);
         mainTitleBack.setVisibility(View.VISIBLE);
-        mainTitleTitle.setText("My petiyaakInfo Box");
+        mainTitleTitle.setText("My Petiyaak Box");
         mainTitleRight.setVisibility(View.VISIBLE);
         mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
 
