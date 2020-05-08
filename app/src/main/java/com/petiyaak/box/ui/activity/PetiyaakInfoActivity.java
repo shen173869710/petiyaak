@@ -119,31 +119,7 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
         if (info.getDeviceId() > 0 ) {
             mPresenter.getUserListByDeviceId(info.getDeviceId(),true);
         }
-
-        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
-            ClientManager.getInstance().registerConnectStatusListener(info.getBluetoothMac());
-            ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
-                @Override
-                public void onResponse(boolean isConnect) {
-                    LogUtils.e("PetiyaakInfoActivity", "connect->onResponse" + isConnect);
-                    if (isConnect) {
-                        info.setItemBlueStatus(true);
-                        startNotify();
-                    } else {
-                        info.setItemBlueStatus(false);
-                    }
-                    if (info.isItemBlueStatus()) {
-                        petiyaakInfoStatus.setText(R.string.connect);
-                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
-                        petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.dark));
-                    } else {
-                        petiyaakInfoStatus.setText(R.string.disconnect);
-                        petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
-                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
-                    }
-                }
-            });
-        }
+        connectBle();
     }
 
 
@@ -320,6 +296,35 @@ public class PetiyaakInfoActivity extends BaseActivity <PetiyaakInfoPresenter> i
                 petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
                 mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);;
             }
+            connectBle();
+        }
+    }
+
+
+    private void connectBle() {
+        if (!TextUtils.isEmpty(info.getBluetoothMac())) {
+            ClientManager.getInstance().registerConnectStatusListener(info.getBluetoothMac());
+            ClientManager.getInstance().connectDevice(info.getBluetoothMac(), new ConnectResponse() {
+                @Override
+                public void onResponse(boolean isConnect) {
+                    LogUtils.e("PetiyaakInfoActivity", "connect->onResponse" + isConnect);
+                    if (isConnect) {
+                        info.setItemBlueStatus(true);
+                        startNotify();
+                    } else {
+                        info.setItemBlueStatus(false);
+                    }
+                    if (info.isItemBlueStatus()) {
+                        petiyaakInfoStatus.setText(R.string.connect);
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_con);
+                        petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.dark));
+                    } else {
+                        petiyaakInfoStatus.setText(R.string.disconnect);
+                        petiyaakInfoStatus.setTextColor(getResources().getColor(R.color.black));
+                        mainTitleRightImage.setBackgroundResource(R.mipmap.bluetooth_discon);
+                    }
+                }
+            });
         }
     }
 
