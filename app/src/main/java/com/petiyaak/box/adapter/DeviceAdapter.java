@@ -89,7 +89,7 @@ public class DeviceAdapter extends BaseQuickAdapter<BluetoothDevice, BaseViewHol
             return;
         }
         String name = bleDevice.getName();
-        if(!TextUtils.isEmpty(name) && name.contains("yaak")) {
+        if(!TextUtils.isEmpty(name) && name.contains("YY")) {
             getData().add(0,bleDevice);
             notifyDataSetChanged();
         }

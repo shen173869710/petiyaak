@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.inuker.bluetooth.library.search.SearchRequest;
 import com.inuker.bluetooth.library.search.SearchResult;
 import com.inuker.bluetooth.library.search.response.SearchResponse;
@@ -30,7 +31,6 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.petiyaak.box.R;
 import com.petiyaak.box.adapter.DeviceAdapter;
 import com.petiyaak.box.base.BaseActivity;
-import com.petiyaak.box.base.BaseApp;
 import com.petiyaak.box.constant.ConstantEntiy;
 import com.petiyaak.box.event.BindSucessEvent;
 import com.petiyaak.box.event.DialogDIsmissEvent;
@@ -78,6 +78,8 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
     private String bluetoothName;
     private String bluetoothMac;
     private boolean isBind;
+
+    private boolean click = false;
 
 
     public static Intent getIntent(Context context, PetiyaakBoxInfo info, boolean isBind) {
@@ -151,10 +153,55 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
                     ToastUtils.showToast("Please connect buletooth");
                     return;
                 }
-                mPresenter.bindDeviced(info.getDeviceName(), bluetoothName, bluetoothMac, BaseApp.userInfo.getId());
+                click = !click;
+                byte[] WriteBytes = new byte[20];
+                byte[] value = new byte[20];
+                value[0] = (byte) 0x00;
+
+//                byte[] WriteBytes = new byte[3];
+//                WriteBytes[0] = (byte) 0xE7;
+//                WriteBytes[1] = (byte) 0xf4;
+//                if (click) {
+//                    WriteBytes[2] = (byte)0x01;
+//                }else {
+//                    WriteBytes[2] = (byte)0x00;
+//                }
+//                mPresenter.bindDeviced(info.getDeviceName(), bluetoothName, bluetoothMac, BaseApp.userInfo.getId());
+                String cmd = "";
+                if (click) {
+                    cmd = "FD04100000000000DF";
+                }else {
+                    cmd = "FD04100000000000DF";
+                }
+                WriteBytes= hex2byte(cmd.getBytes());
+                ClientManager.getInstance().writeData(bluetoothMac, WriteBytes,new BleWriteResponse() {
+                    @Override
+                    public void onResponse(int code) {
+                        LogUtils.e("bind", "code = "+code);
+                    }
+                });
+
+
             }
         });
     }
+
+
+    public static byte[] hex2byte(byte[] b) {
+        if ((b.length % 2) != 0) {
+            throw new IllegalArgumentException("长度不是偶数");
+        }
+        byte[] b2 = new byte[b.length / 2];
+        for (int n = 0; n < b.length; n += 2) {
+            String item = new String(b, n, 2);
+            // 两位一组，表示一个字节,把这样表示的16进制字符串，还原成一个进制字节
+            b2[n / 2] = (byte) Integer.parseInt(item, 16);
+        }
+        b = null;
+        return b2;
+    }
+
+
 
     @Override
     protected BindPresenter createPresenter() {
@@ -286,6 +333,13 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
                     mDeviceAdapter.addDevice(bleDevice);
                     mDeviceAdapter.notifyDataSetChanged();
                     bluelist.scrollToPosition(0);
+
+                    ClientManager.getInstance().writeData(bluetoothMac, "PASS151811@".getBytes(), new BleWriteResponse() {
+                        @Override
+                        public void onResponse(int code) {
+
+                        }
+                    });
 
                 }else {
                     Toast.makeText(BindPetiyaakActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();

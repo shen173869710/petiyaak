@@ -179,14 +179,15 @@ public class ClientManager {
                 if (bchar != null && bchar.getCharacters() != null && bchar.getUUID() != null) {
                     for (BleGattCharacter character : bchar.getCharacters()) {
                         if (character != null && character.getUuid() != null) {
+                            LogUtils.e(TAG, "uuid = " + character.getUuid());
                             String uuid = character.getUuid().toString();
-                            if (!TextUtils.isEmpty(uuid) && uuid.contains("fff4")) {
+                            if (!TextUtils.isEmpty(uuid) && uuid.contains("FF26")) {
                                 mReadUuid = character.getUuid();
                                 LogUtils.e(TAG, "readUUid = " + mReadUuid);
                                 mServerId = bchar.getUUID();
                                 LogUtils.e(TAG, "serverId = " + mServerId);
                             }
-                            if (!TextUtils.isEmpty(uuid) && uuid.contains("fff3")) {
+                            if (!TextUtils.isEmpty(uuid) && uuid.contains("ff69")) {
                                 mWriteUuid = character.getUuid();
                                 LogUtils.e(TAG, "writeUuid = " + mWriteUuid);
                                 mServerId = bchar.getUUID();
@@ -222,7 +223,7 @@ public class ClientManager {
 
 
     public boolean getUUid (String mac) {
-        if (mServerId == null || mReadUuid == null || mWriteUuid == null) {
+        if (mServerId == null || mWriteUuid == null) {
             BleConnectOptions options = new BleConnectOptions.Builder()
                     .setConnectRetry(3)
                     .setConnectTimeout(10000)

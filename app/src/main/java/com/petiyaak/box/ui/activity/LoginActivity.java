@@ -119,6 +119,12 @@ public class LoginActivity extends BaseActivity <LoginPresenter> implements ILog
     @Override
     public void loginFail(Throwable error, Integer code, String msg) {
         ToastUtils.showToast(msg+"");
+
+        BaseApp.userInfo = new UserInfo();
+        BaseApp.userInfo.setId(1);
+        BaseApp.userInfo.setAvatar("1.png");
+        BaseApp.userInfo.setUsername("123");
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
     }
 
     @Override
