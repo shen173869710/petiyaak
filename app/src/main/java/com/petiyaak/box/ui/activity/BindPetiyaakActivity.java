@@ -51,6 +51,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
@@ -168,11 +169,11 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
 //                }
 //                mPresenter.bindDeviced(info.getDeviceName(), bluetoothName, bluetoothMac, BaseApp.userInfo.getId());
                 String cmd = "";
-                if (click) {
-                    cmd = "FD04100000000000DF";
-                }else {
-                    cmd = "FD04100000000000DF";
-                }
+//                if (click) {
+                    cmd = "FDF1F10000000000DF";
+//                }else {
+//                    cmd = "FDF1F00000000000DF";
+//                }
                 WriteBytes= hex2byte(cmd.getBytes());
                 ClientManager.getInstance().writeData(bluetoothMac, WriteBytes,new BleWriteResponse() {
                     @Override
@@ -201,6 +202,40 @@ public class BindPetiyaakActivity extends BaseActivity <BindPresenter> implement
         return b2;
     }
 
+
+    /**
+     * Convert hex string to byte[] 把为字符串转化为字节数组
+     *
+     * @param hexString
+     *            the hex string
+     * @return byte[]
+     */
+    public static byte[] hexStringToBytes(String hexString) {
+        hexString = hexString.replaceAll(" ", "");
+        if (hexString == null || hexString.equals("")) {
+            return null;
+        }
+        hexString = hexString.toUpperCase(Locale.getDefault());
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] d = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+
+    /**
+     * Convert char to byte
+     *
+     * @param c
+     *            char
+     * @return byte
+     */
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
 
 
     @Override
